@@ -4,6 +4,7 @@ import NewsCard from '@/components/NewsCard' // مسیرت رو بر اساس پ
 
 export async function getServerSideProps(context) {
   const { category } = context.params
+  console.log("TEST Category:", category);
 
   try {
     const res = await fetch(`http://localhost:8000/api/news?category=${encodeURIComponent(category)}&limit=20`)
