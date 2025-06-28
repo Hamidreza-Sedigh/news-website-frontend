@@ -4,11 +4,12 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 
 const categories = [
-  { name: 'سیاسی', href: '/category/politics' },
-  { name: 'اقتصادی', href: '/category/economy' },
-  { name: 'ورزشی', href: '/category/sports' },
-  { name: 'فرهنگی', href: '/category/culture' },
-  { name: 'بین الملل', href: '/category/international' },
+  { name: 'سیاسی', href: '/categories/سیاسی' },
+  { name: 'اقتصادی', href: '/categories/اقتصادی' },
+  { name: 'ورزشی', href: '/categories/ورزشی' },
+  { name: 'فرهنگی', href: '/categories/فرهنگی' },
+  { name: 'فناوری', href: '/categories/فناوری' },
+
 ]
 
 const socialLinks = [

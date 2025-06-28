@@ -52,7 +52,7 @@ export default function AboutPage() {
       </section>
 
       {/* بخش تیم */}
-      <section className="bg-gray-100 py-16">
+      {/* <section className="bg-gray-100 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">تیم ما</h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -72,7 +72,7 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* سوالات متداول */}
       <section className="container mx-auto px-4 py-16">

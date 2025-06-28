@@ -13,7 +13,8 @@ export async function getServerSideProps(context) {
     return {
       props: {
         category,
-        newsList: data || [],
+        //newsList: data || [],
+        newsList: Array.isArray(data) ? data : [], 
       },
     }
   } catch (error) {
@@ -43,9 +44,13 @@ export default function CategoryPage({ category, newsList }) {
           {newsList.length === 0 && (
             <p className="text-gray-500 text-right">هیچ خبری در این دسته وجود ندارد.</p>
           )}
-          {newsList.map((news) => (
-            <NewsCard key={news._id} news={news} />
-          ))}
+          {Array.isArray(newsList) && newsList.length > 0 ? (
+            newsList.map((news) => (
+              <NewsCard key={news._id} news={news} />
+            ))
+          ) : (
+            <p className="text-center text-gray-500 mt-4">هیچ خبری در این دسته‌بندی موجود نیست.</p>
+          )}
         </div>
       </div>
     </>
