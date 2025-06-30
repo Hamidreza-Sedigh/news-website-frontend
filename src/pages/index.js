@@ -76,23 +76,13 @@ export default function HomePage({ mainNews, error }) {
 
   return (
     <>
-      <Head>
-        <title>کهربانت | صفحه اصلی</title>
-        <meta name="description" content="جدیدترین اخبار ایران و جهان در دسته‌بندی‌های مختلف مانند فناوری، ورزش، سیاسی و..." />
-
-        {/* شبکه‌های اجتماعی */}
-        <meta property="og:title" content="سایت خبری کهربا" />
-        <meta property="og:description" content="جدیدترین اخبار دسته‌بندی شده از منابع معتبر" />
-        <meta property="og:image" content="https://example.com/og-home.jpg" />
-        <meta property="og:url" content="https://example.com" />
-        <meta property="og:type" content="website" />
-
-        {/* توییتر (اختیاری) */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="سایت خبری من" />
-        <meta name="twitter:description" content="اخبار فوری و تحلیلی از منابع معتبر" />
-        <meta name="twitter:image" content="https://example.com/og-home.jpg" />
-      </Head>
+      <Seo
+        title="صفحه اصلی"
+        description="جدیدترین اخبار ایران و جهان در دسته‌بندی‌های مختلف"
+        url="/"
+        image="/og-home.jpg"
+        type="website"
+      />
 
       <div className="max-w-full px-4 py-6 text-right" dir="rtl">
         <h1 className="text-2xl font-bold mb-4">آخرین اخبار</h1>
