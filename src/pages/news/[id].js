@@ -1,8 +1,11 @@
+import Head from 'next/head'
 import NewsLayout from '../../components/NewsLayout';
 import NewsHeader from '../../components/NewsHeader';
 import NewsContent from '../../components/NewsContent';
 import NewsFooter from '../../components/NewsFooter';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Seo from '@/components/Seo'
+
 
 export default function NewsDetail({ news, error }) {
   if (error) {
@@ -20,26 +23,43 @@ export default function NewsDetail({ news, error }) {
   }
 
   return (
-    <NewsLayout>
-      <NewsHeader 
-        title={news.title} 
-        sourceName={news.sourceName} 
-        date={news.date} 
-        category={news.category} 
-        subCategory={news.subCategory}
-        views={news.views}
+    <>
+      <Seo
+        title={news.title}
+        description={news.description}
+        url={`api/news/${news.id}`}
+        image={news.image || '/default.jpg'}
       />
-      
-      <NewsContent 
-        description={news.description} 
-        passage={news.passage}
-      />
-      
-      <NewsFooter 
-        siteAddress={news.siteAddress} 
-        link={news.link}
-      />
-    </NewsLayout>
+
+      <NewsLayout
+        meta={{
+          title: news.title,
+          description: news.description,
+          url: `http://localhost:8000/api/news/${news.id}`, // ← یا slug
+          image: news.image || '/default.jpg', // ← اگر فیلد image داری
+        }}
+      >
+        <NewsHeader 
+          title={news.title} 
+          sourceName={news.sourceName} 
+          date={news.date} 
+          category={news.category} 
+          subCategory={news.subCategory}
+          views={news.views}
+        />
+        
+        <NewsContent 
+          description={news.description} 
+          passage={news.passage}
+        />
+        
+        <NewsFooter 
+          siteAddress={news.siteAddress} 
+          link={news.link}
+        />
+      </NewsLayout>
+    </>
+    
   );
 }
 

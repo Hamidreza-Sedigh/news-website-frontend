@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Head from 'next/head'
 import NewsCard from '../components/NewsCard'
 
 export async function getServerSideProps() {
@@ -74,25 +75,45 @@ export default function HomePage({ mainNews, error }) {
   }
 
   return (
-    <div className="max-w-full px-4 py-6 text-right" dir="rtl">
-      <h1 className="text-2xl font-bold mb-4">آخرین اخبار</h1>
+    <>
+      <Head>
+        <title>کهربانت | صفحه اصلی</title>
+        <meta name="description" content="جدیدترین اخبار ایران و جهان در دسته‌بندی‌های مختلف مانند فناوری، ورزش، سیاسی و..." />
 
-      <div className="flex gap-6 flex-row-reverse">
-        <aside className="w-1/4 bg-gray-50 p-4 rounded">
-          <h2 className="text-xl font-semibold mb-4">اخبار مهم</h2>
-          {importantNewsMock.map((news) => (
-            <NewsCard key={news._id} news={news} />
-          ))}
-        </aside>
+        {/* شبکه‌های اجتماعی */}
+        <meta property="og:title" content="سایت خبری کهربا" />
+        <meta property="og:description" content="جدیدترین اخبار دسته‌بندی شده از منابع معتبر" />
+        <meta property="og:image" content="https://example.com/og-home.jpg" />
+        <meta property="og:url" content="https://example.com" />
+        <meta property="og:type" content="website" />
 
-        <main className="flex-1">
-          <div className="grid grid-cols-1 gap-6">
-            {mainNews.map((news) => (
+        {/* توییتر (اختیاری) */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="سایت خبری من" />
+        <meta name="twitter:description" content="اخبار فوری و تحلیلی از منابع معتبر" />
+        <meta name="twitter:image" content="https://example.com/og-home.jpg" />
+      </Head>
+
+      <div className="max-w-full px-4 py-6 text-right" dir="rtl">
+        <h1 className="text-2xl font-bold mb-4">آخرین اخبار</h1>
+
+        <div className="flex gap-6 flex-row-reverse">
+          <aside className="w-1/4 bg-gray-50 p-4 rounded">
+            <h2 className="text-xl font-semibold mb-4">اخبار مهم</h2>
+            {importantNewsMock.map((news) => (
               <NewsCard key={news._id} news={news} />
             ))}
-          </div>
-        </main>
+          </aside>
+
+          <main className="flex-1">
+            <div className="grid grid-cols-1 gap-6">
+              {mainNews.map((news) => (
+                <NewsCard key={news._id} news={news} />
+              ))}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
