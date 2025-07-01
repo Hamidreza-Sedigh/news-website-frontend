@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import Head from 'next/head'
 import NewsCard from '../components/NewsCard'
+import Seo from '@/components/Seo'
+import PopularNews from '../components/PopularNews';
 
 export async function getServerSideProps() {
   try {
@@ -90,6 +92,8 @@ export default function HomePage({ mainNews, error }) {
         <div className="flex gap-6 flex-row-reverse">
           <aside className="w-1/4 bg-gray-50 p-4 rounded">
             <h2 className="text-xl font-semibold mb-4">اخبار مهم</h2>
+            <PopularNews />
+
             {importantNewsMock.map((news) => (
               <NewsCard key={news._id} news={news} />
             ))}
