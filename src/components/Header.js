@@ -2,6 +2,8 @@
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link'
 
 const navigation = [
@@ -16,6 +18,31 @@ const navigation = [
 ]
 
 export default function NewsHeader() {
+  const router = useRouter();
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchClick = () => {
+    setShowSearch(true);
+  };
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && searchTerm.trim() !== "") {
+      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      setShowSearch(false);
+      setSearchTerm("");
+    }
+  };
+
+  const handleBlur = () => {
+    setShowSearch(false);
+    setSearchTerm("");
+  };
+  
   return (
     <Popover as="header" className="relative bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -65,9 +92,27 @@ export default function NewsHeader() {
 
           {/* دکمه جستجو (اختیاری) */}
           <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-            <button className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700">
-              جستجو
-            </button>
+            { showSearch  ? (
+                <input
+                type="text"
+                autoFocus
+                placeholder="جست‌وجو..."
+                className="border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring focus:ring-blue-300"
+                value={searchTerm}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                onBlur={handleBlur}
+              />
+            ):(
+              <button 
+                className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
+                aria-label="Search"
+                onClick={handleSearchClick}
+              >
+                جستجو
+              </button>
+            )
+            }
           </div>
         </div>
       </div>
@@ -127,9 +172,26 @@ export default function NewsHeader() {
             </div>
             <div className="py-6 px-5 space-y-6">
               <div>
-                <button className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700">
-                  جستجو
-                </button>
+              { showSearch  ? (
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="جست‌وجو..."
+                  className="border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring focus:ring-blue-300"
+                  value={searchTerm}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleBlur}
+                />
+              ):( 
+                  <button 
+                    className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
+                    onClick={handleSearchClick}
+                    aria-label="Search"
+                  >
+                    جستجو
+                  </button>
+              )}
               </div>
             </div>
           </div>
