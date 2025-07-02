@@ -46,7 +46,13 @@ export default function CategoryPage({ category, newsList }) {
           )}
           {Array.isArray(newsList) && newsList.length > 0 ? (
             newsList.map((news) => (
-              <NewsCard key={news._id} news={news} />
+              <NewsCard key={news._id} news={news} 
+              showInfo={{
+                date: true,
+                source: true,
+                views: true,
+                category: false,
+              }}/>
             ))
           ) : (
             <p className="text-center text-gray-500 mt-4">هیچ خبری در این دسته‌بندی موجود نیست.</p>

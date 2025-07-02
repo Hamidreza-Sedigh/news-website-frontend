@@ -26,7 +26,7 @@ export default function NewsHeader() {
               <a className="flex items-center">
                 <span className="sr-only">سایت خبری</span>
                 <svg
-                  className="h-8 w-auto text-red-600"
+                  className="h-8 w-auto text-blue-600"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -56,7 +56,7 @@ export default function NewsHeader() {
           <nav className="hidden md:flex space-x-10">
             {navigation.map((item) => (
               <Link key={item.name} href={item.href} legacyBehavior>
-                <a className="text-base font-medium text-gray-700 hover:text-red-600 transition-colors duration-200">
+                <a className="text-base font-medium text-gray-700 hover:text-blue-600 transition-colors duration-200">
                   {item.name}
                 </a>
               </Link>
@@ -65,7 +65,7 @@ export default function NewsHeader() {
 
           {/* دکمه جستجو (اختیاری) */}
           <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-            <button className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700">
+            <button className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700">
               جستجو
             </button>
           </div>
@@ -91,7 +91,7 @@ export default function NewsHeader() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <svg
-                    className="h-8 w-auto text-red-600"
+                    className="h-8 w-auto text-blue-600"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -127,7 +127,7 @@ export default function NewsHeader() {
             </div>
             <div className="py-6 px-5 space-y-6">
               <div>
-                <button className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700">
+                <button className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700">
                   جستجو
                 </button>
               </div>
