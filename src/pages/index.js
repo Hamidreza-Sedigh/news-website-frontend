@@ -3,60 +3,45 @@ import Head from 'next/head'
 import NewsCard from '../components/NewsCard'
 import Seo from '@/components/Seo'
 import PopularNews from '../components/PopularNews';
+import { Disclosure } from '@headlessui/react'
+import { ChevronUpIcon } from '@heroicons/react/20/solid'
 
 export async function getServerSideProps() {
   try {
-    const res = await fetch('http://localhost:8000/api/news/latest')
+    const [latestRes, popularRes] = await Promise.all([
+      fetch('http://localhost:8000/api/news/latest'),
+      fetch('http://localhost:3000/api/proxy/news/popular'),
+    ]);
 
-    if (!res.ok) {
-      // اگر پاسخ سرور خطا بود
-      return {
-        props: {
-          mainNews: null,
-          error: `خطا در دریافت اخبار: ${res.status}`,
-        },
-      }
+    const props = {
+      mainNews: null,
+      popularNews: [],
+      error: null,
+    };
+
+    if (!latestRes.ok) {
+      props.error = `خطا در دریافت اخبار: ${latestRes.status}`;
+    } else {
+      props.mainNews = await latestRes.json();
     }
 
-    const mainNews = await res.json()
-
-    return {
-      props: {
-        mainNews,
-        error: null,
-      },
+    if (popularRes.ok) {
+      props.popularNews = await popularRes.json();
     }
+
+    return { props };
   } catch (error) {
-    // خطاهای شبکه یا غیرمنتظره
     return {
       props: {
         mainNews: null,
-        error: error.message || 'خطای نامشخص در دریافت اخبار',
+        popularNews: [],
+        error: error.message || 'خطای نامشخص در دریافت اطلاعات',
       },
-    }
+    };
   }
 }
 
-export default function HomePage({ mainNews, error }) {
-  // فرض کنیم اخبار مهم ماک هست
-  const importantNewsMock = [
-    {
-      _id: 'imp1',
-      title: 'خبر مهم ۱: افزایش قیمت ارز',
-      description: 'افزایش ناگهانی قیمت ارز در بازار امروز...',
-      sourceName: 'خبرگزاری الف',
-      date: new Date('2025-06-01'),
-      link: '/news/imp1',
-    },
-    {
-      _id: 'imp2',
-      title: 'خبر مهم ۲: انتخابات پیش رو',
-      description: 'جزئیات بیشتر درباره انتخابات آتی...',
-      sourceName: 'خبرگزاری ب',
-      date: new Date('2025-06-02'),
-      link: '/news/imp2',
-    },
-  ]
+export default function HomePage({ mainNews, popularNews, error }) {
 
   if (error) {
     return (
@@ -87,19 +72,30 @@ export default function HomePage({ mainNews, error }) {
       />
 
       <div className="max-w-full px-4 py-6 text-right" dir="rtl">
-        <h1 className="text-2xl font-bold mb-4">آخرین اخبار</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-4">آخرین اخبار</h1>
 
-        <div className="flex gap-6 flex-row-reverse">
-          <aside className="w-1/4 bg-gray-50 p-4 rounded">
-            <h2 className="text-xl font-semibold mb-4">اخبار مهم</h2>
-            <PopularNews />
+        <div className="flex flex-col-reverse md:flex-row-reverse gap-6">
+          <aside className="w-full md:w-1/4 bg-gray-50 p-4 rounded">
+            <Disclosure defaultOpen={true}>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="flex justify-between w-full px-2 py-2 text-sm font-medium text-right text-gray-800 bg-gray-100 rounded md:hidden">
+                    <span>اخبار مهم</span>
+                    <ChevronUpIcon
+                      className={`w-5 h-5 transform transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                    />
+                  </Disclosure.Button>
 
-            {importantNewsMock.map((news) => (
-              <NewsCard key={news._id} news={news} />
-            ))}
+                  <Disclosure.Panel className="mt-4 md:mt-0 md:block">
+                    <h2 className="hidden md:block text-xl md:text-2xl font-semibold mb-4">اخبار مهم</h2>
+                    <PopularNews popularNews={popularNews} />
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
           </aside>
 
-          <main className="flex-1">
+          <main className="w-full md:flex-1">
             <div className="grid grid-cols-1 gap-6">
               {mainNews.map((news) => (
                 <NewsCard key={news._id} news={news} />

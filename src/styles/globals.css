@@ -28,6 +28,11 @@
   }
 }
 
+html {
+  font-size: 15px; /* ← پیش‌فرض Tailwind 16px هست، این میشه 1 درجه کوچیک‌تر */
+}
+
+
 body {
   font-family: 'Vazir', sans-serif, Arial, Helvetica;
   background: var(--background);
