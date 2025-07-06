@@ -8,6 +8,7 @@ import Link from 'next/link'
 
 const navigation = [
   { name: 'خانه', href: '/' },
+  { name: 'منابع خبری', href: '/sources/news-sources' },
   { name: 'سیاسی', href: '/categories/سیاسی' },
   { name: 'اقتصادی', href: '/categories/اقتصادی' },
   { name: 'ورزشی', href: '/categories/ورزشی' },
