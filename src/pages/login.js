@@ -1,6 +1,7 @@
 // pages/login.js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { login } from '../lib/auth';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -13,19 +14,28 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    const res = await fetch('http://localhost:8000/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
+    const data = await login(form.email, form.password);
 
-    const data = await res.json();
-    if (res.ok && data.token) {
-      localStorage.setItem('token', data.token);
+    if (data.token) {
       router.push('/dashboard');
     } else {
       setError(data.error || 'ورود ناموفق بود');
     }
+    
+    // const res = await login(form.email, form.password);
+    // const res = await fetch('http://localhost:8000/api/login', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(form),
+    // });
+
+    // const data = await res.json();
+    // if (res.ok && data.token) {
+    //   localStorage.setItem('token', data.token);
+    //   router.push('/dashboard');
+    // } else {
+    //   setError(data.error || 'ورود ناموفق بود');
+    // }
   };
 
   return (
