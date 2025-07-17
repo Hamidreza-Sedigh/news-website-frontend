@@ -56,6 +56,7 @@ export default function NewsDetail({ news, error }) {
         <NewsFooter 
           siteAddress={news.siteAddress} 
           link={news.link}
+          newsId={news._id}
         />
       </NewsLayout>
     </>
