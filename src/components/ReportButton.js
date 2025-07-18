@@ -10,11 +10,22 @@ export default function ReportButton({ newsId, link }) {
 
   const storageKey = `report_${newsId}`;
 
+  const resetForm = () => {
+    setDescription('');
+    setMessage('');
+    setStatus(null); // چون null یعنی هیچ پیامی نمایش داده نشه
+  };
+
+  const closeModal = () => {
+    resetForm();
+    setOpen(false);
+  };
+
   const alreadyReported = () => {
     const lastTime = localStorage.getItem(storageKey);
     if (!lastTime) return false;
     const diff = Date.now() - parseInt(lastTime);
-    return diff < 24 * 60 * 60 * 1000;
+    return diff < 1 * 60 * 60 * 1000;
   };
 
   const handleSubmit = async () => {
@@ -29,7 +40,7 @@ export default function ReportButton({ newsId, link }) {
     setMessage('');
 
     try {
-      const res = await fetch('/api/report', {
+      const res = await fetch('/api/proxy/other/reportProblem', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newsId, url: link, description }),
@@ -48,7 +59,7 @@ export default function ReportButton({ newsId, link }) {
           setMessage('');
         }, 1500);
       } else {
-        setStatus('error');
+          setStatus('error');
         setMessage(data.message || 'خطایی رخ داد.');
       }
     } catch {
@@ -69,7 +80,7 @@ export default function ReportButton({ newsId, link }) {
         گزارش خرابی لینک
       </button>
 
-      <Dialog open={open} onClose={() => setOpen(false)} className="relative z-50">
+      <Dialog open={open} onClose={closeModal} className="relative z-50">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
@@ -97,7 +108,7 @@ export default function ReportButton({ newsId, link }) {
 
             <div className="flex justify-end space-x-2">
               <button
-                onClick={() => setOpen(false)}
+                onClick={closeModal} 
                 className="px-4 py-1.5 text-sm rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700"
               >
                 انصراف

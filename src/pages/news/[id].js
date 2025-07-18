@@ -46,6 +46,7 @@ export default function NewsDetail({ news, error }) {
           category={news.category} 
           subCategory={news.subCategory}
           views={news.views}
+          imageUrl={news.imageUrl}
         />
         
         <NewsContent 

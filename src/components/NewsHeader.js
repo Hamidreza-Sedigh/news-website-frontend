@@ -1,11 +1,10 @@
 import { ClockIcon, EyeIcon, LinkIcon } from '@heroicons/react/24/outline';
-// import { format } from 'date-fns';
-// import { faIR } from 'date-fns/locale';
 import { format } from 'date-fns-jalali';
 import { faIR } from 'date-fns-jalali/locale';
 
 
-export default function NewsHeader({ title, sourceName, date, category, subCategory, views }) {
+export default function NewsHeader({ title, sourceName, date, category, subCategory, views, imageUrl }) {
+
   return (
     <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
       <div className="flex flex-col space-y-2">
@@ -19,6 +18,17 @@ export default function NewsHeader({ title, sourceName, date, category, subCateg
             </span>
           )}
         </div>
+
+        {imageUrl && (
+          <div className="mt-3">
+            <img
+              src={imageUrl}
+              alt={title}
+              className="w-full h-auto rounded-md"
+            />
+          </div>
+        )}
+
         
         <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
         
