@@ -19,16 +19,6 @@ export default function NewsHeader({ title, sourceName, date, category, subCateg
           )}
         </div>
 
-        {imageUrl && (
-          <div className="mt-3">
-            <img
-              src={imageUrl}
-              alt={title}
-              className="w-full h-auto rounded-md"
-            />
-          </div>
-        )}
-
         
         <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
         
@@ -50,6 +40,18 @@ export default function NewsHeader({ title, sourceName, date, category, subCateg
             </div>
           </div>
         </div>
+
+        {imageUrl && (
+          <div className="mt-3">
+            <img
+              src={imageUrl}
+              alt={title}
+              className="w-full h-auto rounded-md"
+            />
+          </div>
+        )}
+
+
       </div>
     </div>
   );
