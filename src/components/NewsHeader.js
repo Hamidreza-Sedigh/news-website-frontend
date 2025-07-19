@@ -41,7 +41,7 @@ export default function NewsHeader({ title, sourceName, date, category, subCateg
           </div>
         </div>
 
-        {imageUrl && (
+        {/* {imageUrl && (
           <div className="mt-3">
             <img
               src={imageUrl}
@@ -49,7 +49,7 @@ export default function NewsHeader({ title, sourceName, date, category, subCateg
               className="w-full h-auto rounded-md"
             />
           </div>
-        )}
+        )} */}
 
 
       </div>

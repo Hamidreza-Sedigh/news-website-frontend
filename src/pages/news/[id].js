@@ -52,6 +52,7 @@ export default function NewsDetail({ news, error }) {
         <NewsContent 
           description={news.description} 
           passage={news.passage}
+          imageUrl={news.imageUrl}
         />
         
         <NewsFooter 
