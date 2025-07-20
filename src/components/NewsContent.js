@@ -4,13 +4,21 @@ export default function NewsContent({ description, passage, imageUrl }) {
   const [cleanPassage, setCleanPassage] = useState('');
 
   useEffect(() => {
+    let active = true;
+
     if (passage) {
-      // بارگذاری داینامیک DOMPurify در سمت کلاینت
-      import('dompurify').then(DOMPurifyModule => {
+      import('dompurify').then((DOMPurifyModule) => {
+        if (!active) return;
         const clean = DOMPurifyModule.default.sanitize(passage);
         setCleanPassage(clean);
       });
+    } else {
+      setCleanPassage('');
     }
+
+    return () => {
+      active = false;
+    };
   }, [passage]);
 
   return (
@@ -28,13 +36,11 @@ export default function NewsContent({ description, passage, imageUrl }) {
           )}
 
           {description && (
-            <p className="text-gray-700 text-lg md:w-2/3">
-              {description}
-            </p>
+            <p className="text-gray-700 text-lg md:w-2/3">{description}</p>
           )}
         </div>
 
-        {passage && (
+        {cleanPassage && (
           <div className="mt-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">متن کامل خبر:</h2>
             <div
