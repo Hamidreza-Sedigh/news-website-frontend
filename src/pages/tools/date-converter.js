@@ -89,73 +89,73 @@ export default function DateConverterPage() {
 
       <div className="space-y-6">
         {/* تاریخ شمسی */}
-        <div className="flex items-center space-x-2 rtl:space-x-reverse">
-          <div className="flex-1">
-            <label className="block mb-2 font-medium text-gray-700">تاریخ شمسی</label>
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">تاریخ شمسی</label>
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <DatePicker
               value={jalaliDate}
               onChange={handleJalaliChange}
               calendar={persian}
               locale={persian_fa}
-              className="border rounded-lg p-2 w-full"
+              className="border rounded-lg p-2 flex-1"
             />
+            {jalaliDate && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    copySingleDate("jalali");
+                    setShowTooltip("jalali");
+                    setTimeout(() => setShowTooltip(null), 1500);
+                  }}
+                  className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
+                  aria-label="کپی تاریخ شمسی"
+                >
+                  <ClipboardIcon className="h-5 w-5" />
+                </button>
+                {showTooltip === "jalali" && (
+                  <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap min-w-max">
+                    کپی شد!
+                  </span>
+                )}
+              </div>
+            )}
           </div>
-          {jalaliDate && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => {
-                  copySingleDate("jalali");
-                  setShowTooltip("jalali");
-                  setTimeout(() => setShowTooltip(null), 1500);
-                }}
-                className="p-2 rounded hover:bg-gray-100 text-gray-600"
-                aria-label="کپی تاریخ شمسی"
-              >
-                <ClipboardIcon className="h-6 w-6" />
-              </button>
-              {showTooltip === "jalali" && (
-                <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 select-none whitespace-nowrap">
-                  کپی شد!
-                </span>
-              )}
-            </div>
-          )}
         </div>
 
         {/* تاریخ میلادی */}
-        <div className="flex items-center space-x-2 rtl:space-x-reverse">
-          <div className="flex-1">
-            <label className="block mb-2 font-medium text-gray-700">تاریخ میلادی</label>
+        <div>
+          <label className="block mb-2 font-medium text-gray-700">تاریخ میلادی</label>
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <DatePicker
               value={gregorianDate}
               onChange={handleGregorianChange}
               calendar={gregorian}
               locale={gregorian_en}
-              className="border rounded-lg p-2 w-full"
+              className="border rounded-lg p-2 flex-1"
             />
+            {gregorianDate && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    copySingleDate("gregorian");
+                    setShowTooltip("gregorian");
+                    setTimeout(() => setShowTooltip(null), 1500);
+                  }}
+                  className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
+                  aria-label="کپی تاریخ میلادی"
+                >
+                  <ClipboardIcon className="h-5 w-5" />
+                </button>
+                {showTooltip === "gregorian" && (
+                  <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 Wednesday 25 June 2025">
+                    کپی شد!
+                  </span>
+                )}
+              </div>
+            )}
           </div>
-          {gregorianDate && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => {
-                  copySingleDate("gregorian");
-                  setShowTooltip("gregorian");
-                  setTimeout(() => setShowTooltip(null), 1500);
-                }}
-                className="p-2 rounded hover:bg-gray-100 text-gray-600"
-                aria-label="کپی تاریخ میلادی"
-              >
-                <ClipboardIcon className="h-6 w-6" />
-              </button>
-              {showTooltip === "gregorian" && (
-                <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 select-none whitespace-nowrap">
-                  کپی شد!
-                </span>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
@@ -185,11 +185,12 @@ export default function DateConverterPage() {
           پاک کردن
         </button>
         {showTooltip === "both" && (
-          <span className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 select-none whitespace-nowrap">
+          <span className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1">
             هر دو تاریخ کپی شد!
           </span>
         )}
       </div>
     </div>
   );
+
 }
