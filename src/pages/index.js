@@ -81,7 +81,7 @@ export default function HomePage({ mainNews, popularNews, error }) {
             {({ open }) => (
               <>
                 <Disclosure.Button className="flex justify-between items-center w-full px-2 py-2 text-sm font-medium text-right text-gray-800 bg-gray-100 rounded md:hidden">
-                  <span>اخبار مهم</span>
+                  <span>اخبار پربازدید روز</span>
                   <ChevronDownIcon
                     className={`w-5 h-5 transform transition-transform duration-200 ${
                       open ? 'rotate-180' : ''
@@ -89,7 +89,7 @@ export default function HomePage({ mainNews, popularNews, error }) {
                   />
                 </Disclosure.Button>
 
-                <h2 className="hidden md:block text-xl md:text-2xl font-semibold mb-4">اخبار مهم</h2>
+                <h2 className="hidden md:block text-xl md:text-2xl font-semibold mb-4">اخبار پربازدید روز</h2>
 
                 <Transition
                   enter="transition duration-500 ease-out"
