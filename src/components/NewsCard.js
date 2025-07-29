@@ -18,7 +18,8 @@ export default function NewsCard({
 
   return (
     <Link
-      href={`/news/${news._id}`}
+      // href={`/news/${news._id}`}
+      href={`/news/${news.shortId}`}
       className={`flex gap-4 rounded-xl shadow p-4 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
         ${highlightPopular ? 'border border-yellow-400 bg-white hover:bg-gray-50' : 'bg-white hover:bg-gray-50'}
       `}

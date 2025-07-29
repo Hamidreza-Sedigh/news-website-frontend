@@ -114,17 +114,20 @@ export default function HomePage({ mainNews, popularNews, error }) {
           <main className="w-full md:flex-1">
             <h1 className="text-2xl md:text-3xl font-bold mb-4">آخرین اخبار</h1>
             <div className="grid grid-cols-1 gap-6">
-              {mainNews.map((news) => (
-                <NewsCard 
-                  key={news._id} 
-                  news={news}
-                  showInfo={{
-                    date: true,
-                    source: true,
-                    views: true,
-                    category: true,
-                  }} />
-              ))}
+              {mainNews.map((news) =>
+                news.shortId ? (
+                  <NewsCard
+                    key={news.shortId}
+                    news={news}
+                    showInfo={{
+                      date: true,
+                      source: true,
+                      views: true,
+                      category: true,
+                    }}
+                  />
+                ) : null
+              )}
             </div>
           </main>
         </div>

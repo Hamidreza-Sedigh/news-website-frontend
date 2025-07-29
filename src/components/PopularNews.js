@@ -13,7 +13,7 @@ export default function PopularNews({ popularNews = [] }) {
         <div className="grid grid-cols-1                  gap-4">
           {popularNews.map((news) => (
             <NewsCard 
-              key={news._id} 
+              key={news.shordId} 
               news={news} 
               highlightPopular={true}
               showInfo={{
