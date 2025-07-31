@@ -14,6 +14,7 @@ const navigation = [
   { name: 'ورزشی', href: '/categories/ورزشی' },
   { name: 'فناوری', href: '/categories/فناوری' },
   { name: 'سلامت', href: '/categories/سلامت' },
+  // { name: 'سایر دسته بندی ها', href: '/categories/سلامت' },
   { name: 'درباره ما', href: '/about' },
   { name: 'تماس با ما', href: '/contact' },
 ]
