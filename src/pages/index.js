@@ -9,7 +9,8 @@ import { ChevronDownIcon  } from '@heroicons/react/20/solid'
 export async function getServerSideProps() {
   try {
     const [latestRes, popularRes] = await Promise.all([
-      fetch('http://localhost:8000/api/news/latest'),
+      // fetch('http://localhost:8000/api/news/latest'),
+      fetch('http://localhost:3000/api/proxy/news/latest'),
       fetch('http://localhost:3000/api/proxy/news/popular'),
     ]);
 
