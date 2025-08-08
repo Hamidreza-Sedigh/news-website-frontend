@@ -1,4 +1,5 @@
 // pages/register.js
+import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
@@ -41,7 +42,10 @@ export default function RegisterPage() {
         </form>
         <p className="text-sm mt-4 text-center text-gray-600">
           حساب دارید؟{' '}
-          <a href="/login" className="text-blue-600 hover:underline">وارد شوید</a>
+          {/* <a href="/login" className="text-blue-600 hover:underline">وارد شوید</a> */}
+          <Link href="/login" className="text-blue-600 hover:underline">
+            وارد شوید
+          </Link>
         </p>
       </div>
     </div>

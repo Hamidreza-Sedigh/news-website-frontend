@@ -1,4 +1,5 @@
 // pages/login.js
+import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { login } from '../lib/auth';
@@ -50,7 +51,11 @@ export default function LoginPage() {
         </form>
         <p className="text-sm mt-4 text-center text-gray-600">
           حساب ندارید؟{' '}
-          <a href="/register" className="text-green-600 hover:underline">ثبت‌نام کنید</a>
+          {/* <a href="/register" className="text-green-600 hover:underline">ثبت‌نام کنید</a> */}
+          <Link href="/register" className="text-green-600 hover:underline">
+            ثبت‌نام کنید
+          </Link>
+
         </p>
       </div>
     </div>
