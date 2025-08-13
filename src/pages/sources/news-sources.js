@@ -32,13 +32,14 @@ export default function NewsSources({ sources }) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps({ req }) {
   try {
-    // const { req } = context;
-    // const baseUrl = `http://${req.headers.host}`; // برای SSR در محیط dev و prod
-    // const res = await fetch(`${baseUrl}/api/proxy/sources/sources`);
+    // پروتکل و هاست فعلی را به دست می‌آوریم (چه dev چه prod)
+    const protocol = req.headers["x-forwarded-proto"] || "http";
+    const host = req.headers.host;
+    const baseUrl = `${protocol}://${host}`; // مثال: http://localhost:3000 یا http://yourdomain.com:3000
 
-    const res = await fetch(`http://localhost:3000/api/proxy/sources/sources`);
+    const res = await fetch(`${baseUrl}/api/proxy/sources/sources`);
     const data = await res.json();
 
     return {
