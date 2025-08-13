@@ -34,13 +34,13 @@ export default function NewsSources({ sources }) {
 
 export async function getServerSideProps({ req }) {
   try {
-    // فقط دامنه واقعی بدون پورت localhost
+    // پروتکل و هاست فعلی را به دست می‌آوریم
+    // Nginx باید X-Forwarded-Proto را ست کرده باشد
     const protocol = req.headers["x-forwarded-proto"] || "http";
     const host = req.headers.host;
-    const baseUrl = `${protocol}://${host}`;  // http://kahrobanet.ir
+    const baseUrl = `${protocol}://${host}`; // http://localhost:3000 یا http://kahrobanet.ir
 
-    // const res = await fetch(`${baseUrl}/api/proxy/sources/sources`);
-    const res = await fetch(`http://localhost:3000/api/proxy/sources/sources`);
+    const res = await fetch(`${baseUrl}/api/proxy/sources/sources`);
     const data = await res.json();
 
     return {
