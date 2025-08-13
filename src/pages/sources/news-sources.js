@@ -40,6 +40,12 @@ export async function getServerSideProps({ req }) {
     const host = req.headers.host;
     const baseUrl = `${protocol}://${host}`; // http://localhost:3000 یا http://kahrobanet.ir
 
+    console.log("==== SSR Debug ====");
+    console.log("protocol:", protocol);
+    console.log("host:", host);
+    console.log("baseUrl:", baseUrl);
+    console.log("==================");
+
     const res = await fetch(`${baseUrl}/api/proxy/sources/sources`);
     const data = await res.json();
 
