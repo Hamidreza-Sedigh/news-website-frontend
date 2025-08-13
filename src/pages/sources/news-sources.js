@@ -34,10 +34,11 @@ export default function NewsSources({ sources }) {
 
 export async function getServerSideProps(context) {
   try {
-    const { req } = context;
-    const baseUrl = `http://${req.headers.host}`; // برای SSR در محیط dev و prod
+    // const { req } = context;
+    // const baseUrl = `http://${req.headers.host}`; // برای SSR در محیط dev و prod
+    // const res = await fetch(`${baseUrl}/api/proxy/sources/sources`);
 
-    const res = await fetch(`${baseUrl}/api/proxy/sources/sources`);
+    const res = await fetch(`http://localhost:3000/api/proxy/sources/sources`);
     const data = await res.json();
 
     return {
