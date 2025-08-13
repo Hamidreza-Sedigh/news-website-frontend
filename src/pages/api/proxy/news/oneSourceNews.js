@@ -1,3 +1,6 @@
+import { withAuth } from '../middlewares/withAuth';
+import { BACKEND_BASE_URL } from '../config/backend';
+
 export default async function handler(req, res) {
   const { sourceName, page = 1, pageSize = 10 } = req.query;
 
@@ -7,7 +10,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `http://localhost:8000/api/getOneSourceNews/${encodeURIComponent(sourceName)}?page=${page}&pageSize=${pageSize}`
+      `${BACKEND_BASE_URL}/api/getOneSourceNews/${encodeURIComponent(sourceName)}?page=${page}&pageSize=${pageSize}`
     );
 
     if (!response.ok) {
