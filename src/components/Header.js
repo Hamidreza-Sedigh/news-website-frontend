@@ -11,7 +11,7 @@ import Image from 'next/image';
 
 const categories = [
   { name: 'سلامت', href: '/categories/سلامت' },
-  { name: 'جامعه', href: '/categories/جامعه' },
+  { name: 'اجتماعی', href: '/categories/اجتماعی' },
   { name: 'علمی', href: '/categories/علمی' },
 ];
 
