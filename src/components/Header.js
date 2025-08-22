@@ -90,13 +90,24 @@ export default function NewsHeader() {
                       leaveTo="opacity-0 translate-y-1"
                     >
                       <Popover.Panel className="absolute right-0 z-10 mt-2 w-48 bg-white rounded-md shadow-lg py-2">
-                        {item.subItems.map((sub) => (
-                          <Link key={sub.name} href={sub.href} legacyBehavior>
-                            <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                              {sub.name}
-                            </a>
-                          </Link>
-                        ))}
+                        {({ close }) => (
+                          <>
+                            {item.subItems.map((sub) => (
+                              <Link key={sub.name} href={sub.href} legacyBehavior>
+                                <a
+                                  onClick={() => {
+                                    close();        // ✅ بستن Popover
+                                    setOpenSubmenu(false); // اگه خواستی state موبایل هم ریست بشه
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                  }}
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                  {sub.name}
+                                </a>
+                              </Link>
+                            ))}
+                          </>
+                        )}
                       </Popover.Panel>
                     </Transition>
                   </>
