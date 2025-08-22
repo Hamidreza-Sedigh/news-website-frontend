@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: http://kahrobanet.ir/sitemap-news.xml
