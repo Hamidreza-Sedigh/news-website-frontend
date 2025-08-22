@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: http://kahrobanet.ir/sitemap-static.xml
-Sitemap: http://kahrobanet.ir/sitemap-news.xml
