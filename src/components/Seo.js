@@ -8,7 +8,7 @@ export default function Seo({
   type = 'article',
 }) {
   const fullTitle = title ? `${title} | سایت خبری کهربا` : 'کهربا'
-  // const siteUrl = url.startsWith('http') ? url : `https://example.com${url}`
+
   const siteUrl = url.startsWith('http') ? url : `http://kahrobanet.ir${url}`
 
   return (

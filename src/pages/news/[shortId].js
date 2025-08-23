@@ -27,7 +27,7 @@ export default function NewsDetail({ news, error }) {
         title={news.title}
         description={news.description}
         url={`http://localhost:8000/news/${news.shortId}`}
-        image={news.image || '/default.jpg'}
+        image={news.imageUrl}
       />
 
       <NewsLayout
@@ -56,8 +56,9 @@ export default function NewsDetail({ news, error }) {
         
         <NewsFooter 
           siteAddress={news.siteAddress} 
-          link={news.link}
+          link={`http://kahrobanet.ir/news/${news.shortId}`}
           newsId={news.shortId}
+          title={news.title}
         />
       </NewsLayout>
     </>
