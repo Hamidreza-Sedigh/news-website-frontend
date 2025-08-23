@@ -1,4 +1,23 @@
 import Link from 'next/link';
+import { formatDistanceToNow, isToday, isYesterday } from 'date-fns-jalali';
+import { faIR } from 'date-fns/locale';
+
+function formatRelativeDate(dateString) {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+
+  if (isToday(date)) {
+    return formatDistanceToNow(date, { addSuffix: true, locale: faIR });
+    // مثلا: "۲ ساعت پیش" یا "لحظاتی پیش"
+  }
+
+  if (isYesterday(date)) {
+    return 'روز گذشته';
+  }
+
+  return date.toLocaleDateString('fa-IR'); // برای تاریخ‌های قدیمی‌تر
+}
 
 export default function NewsCard({
   news,
@@ -14,7 +33,9 @@ export default function NewsCard({
   const views = news.views || 0;
   const category = news.category || 'بدون دسته‌بندی';
   const sourceName = news.sourceName || 'ناشناخته';
-  const date = news.date ? new Date(news.date).toLocaleDateString('fa-IR') : '';
+//  const date = news.date ? new Date(news.date).toLocaleDateString('fa-IR') : '';
+  const date = formatRelativeDate(news.date);
+
 
   return (
     <Link
