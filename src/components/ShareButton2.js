@@ -53,7 +53,7 @@ export default function ShareButtonsInline({ title, url }) {
       name: 'Twitter',
       url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
       color: 'bg-sky-500',
-      icon: '/icons/twitter.svg',
+      icon: '/icons/x.svg',
     },
     {
       name: 'WhatsApp',
