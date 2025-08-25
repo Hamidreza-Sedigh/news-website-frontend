@@ -24,7 +24,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 py-12">
           <h1 className="text-4xl font-bold mb-4">درباره ما</h1>
           <p className="text-xl max-w-3xl">
-            ما یک پلتفرم پیشرفته جمع‌آوری و تحلیل اخبار هستیم که با استفاده از فناوری‌های روز، آخرین اخبار را به شکلی هوشمندانه به شما ارائه می‌دهیم.
+            ما یک پلتفرم پیشرفته جمع‌آوری اخبار هستیم که با استفاده از فناوری‌های روز، آخرین اخبار را به شکلی هوشمندانه به شما ارائه می‌دهیم.
           </p>
         </div>
       </header>
@@ -41,13 +41,13 @@ export default function AboutPage() {
               ما با جمع‌آوری اخبار از صدها منبع معتبر و تحلیل آن‌ها، اطلاعاتی که نیاز دارید را در کمترین زمان ممکن به شما می‌رسانیم.
             </p>
           </div>
-          <div className="bg-blue-100 rounded-xl p-8">
+          {/* <div className="bg-blue-100 rounded-xl p-8">
             <img 
               src="/images/news-analysis.svg" 
               alt="تحلیل اخبار" 
               className="w-full h-auto"
             />
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -75,7 +75,7 @@ export default function AboutPage() {
       </section> */}
 
       {/* سوالات متداول */}
-      <section className="container mx-auto px-4 py-16">
+      {/* <section className="container mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">سوالات متداول</h2>
         <div className="max-w-3xl mx-auto">
           {faqs.map((faq, index) => (
@@ -98,10 +98,10 @@ export default function AboutPage() {
             </Disclosure>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* CTA */}
-      <section className="bg-blue-700 text-white py-16">
+      {/* <section className="bg-blue-700 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">به جمع کاربران ما بپیوندید</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -111,7 +111,7 @@ export default function AboutPage() {
             شروع کنید
           </button>
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }

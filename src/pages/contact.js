@@ -42,9 +42,10 @@ export default function Contact() {
       <main className="max-w-4xl mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">تماس با ما</h1>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        {/* <div className="grid md:grid-cols-2 gap-8"> */}
+        <div className="grid  gap-8">
           {/* اطلاعات تماس */}
-          <div className="space-y-6">
+          {/* <div className="space-y-6">
             <div className="flex items-start space-x-4">
               <MapPinIcon className="w-6 h-6 text-blue-600" />
               <div>
@@ -66,7 +67,7 @@ export default function Contact() {
                 <p className="text-sm text-gray-600">info@news-site.ir</p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* فرم تماس */}
           <form onSubmit={handleSubmit} className="bg-white shadow-md rounded p-6 space-y-4">
