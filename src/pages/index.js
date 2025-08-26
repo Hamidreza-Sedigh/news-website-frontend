@@ -3,13 +3,13 @@ import Head from 'next/head'
 import NewsCard from '../components/NewsCard'
 import Seo from '@/components/Seo'
 import PopularNews from '../components/PopularNews';
+import MostViewed from '../components/MostViewed';
 import { Disclosure, Transition } from '@headlessui/react'
 import { ChevronDownIcon  } from '@heroicons/react/20/solid'
 
 export async function getServerSideProps() {
   try {
     const [latestRes, popularRes] = await Promise.all([
-      // fetch('http://localhost:8000/api/news/latest'),
       fetch('http://localhost:3000/api/proxy/news/latest'),
       fetch('http://localhost:3000/api/proxy/news/popular'),
     ]);
@@ -82,7 +82,7 @@ export default function HomePage({ mainNews, popularNews, error }) {
             {({ open }) => (
               <>
                 <Disclosure.Button className="flex justify-between items-center w-full px-2 py-2 text-sm font-medium text-right text-gray-800 bg-gray-100 rounded md:hidden">
-                  <span>اخبار پربازدید روز</span>
+                  <span>اخبار پربازدید</span>
                   <ChevronDownIcon
                     className={`w-5 h-5 transform transition-transform duration-200 ${
                       open ? 'rotate-180' : ''
@@ -90,7 +90,7 @@ export default function HomePage({ mainNews, popularNews, error }) {
                   />
                 </Disclosure.Button>
 
-                <h2 className="hidden md:block text-xl md:text-2xl font-semibold mb-4">اخبار پربازدید روز</h2>
+                <h2 className="hidden md:block text-xl md:text-2xl font-semibold mb-4">اخبار پربازدید </h2>
 
                 <Transition
                   enter="transition duration-500 ease-out"
@@ -100,8 +100,9 @@ export default function HomePage({ mainNews, popularNews, error }) {
                   leaveFrom="opacity-100 translate-y-0"
                   leaveTo="opacity-0 -translate-y-4"
                 >
-                  <Disclosure.Panel as="div" static>
-                    <PopularNews popularNews={popularNews} />
+                  <Disclosure.Panel as="div" static> 
+                    {/* <PopularNews popularNews={popularNews} />  */}
+                    <MostViewed  /> 
                   </Disclosure.Panel>
                 </Transition>
 
