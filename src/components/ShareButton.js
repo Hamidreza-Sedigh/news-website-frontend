@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FaTelegramPlane as FaTelegram } from "react-icons/fa";
+import { FaXTwitter, FaInstagram, FaWhatsapp } from "react-icons/fa6";
 import { Copy } from "lucide-react";
 
 export default function ShareButtonsInline({ title, url }) {
@@ -9,36 +11,34 @@ export default function ShareButtonsInline({ title, url }) {
     {
       name: "تلگرام",
       url: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-      color: "bg-blue-500",
-      icon: "/icons/telegram.svg",
+      bgColor: "bg-[#229ed9]",
+      icon: <FaTelegram className="w-6 h-6 text-white" />,
     },
     {
       name: "اینستاگرام",
-      url: `https://www.instagram.com/?url=${encodeURIComponent(url)}`, // اینستاگرام share مستقیم نداره
-      color: "bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600",
-      icon: "/icons/instagram.svg",
+      url: `https://www.instagram.com/?url=${encodeURIComponent(url)}`,
+      bgColor: "bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600",
+      icon: <FaInstagram className="w-6 h-6 text-white" />,
     },
     {
       name: "ایکس",
       url: `https://x.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-      color: "bg-sky-500",
-      icon: "/icons/x.svg",
+      bgColor: "bg-black",          //bgColor: "bg-[#1DA1F2]",
+      icon: <FaXTwitter className="w-6 h-6 text-white" />,
     },
     {
       name: "واتساپ",
       url: `https://api.whatsapp.com/send?text=${encodeURIComponent(title + " " + url)}`,
-      color: "bg-green-500",
-      icon: "/icons/whatsapp.svg",
+      bgColor: "bg-[#25D366]",
+      icon: <FaWhatsapp className="w-6 h-6 text-white" />,
     },
   ];
 
   const handleCopy = async () => {
     try {
       if (navigator.clipboard && window.isSecureContext) {
-        // حالت مدرن (HTTPS یا localhost)
         await navigator.clipboard.writeText(url);
       } else {
-        // fallback برای HTTP یا مرورگرهای قدیمی
         const textarea = document.createElement("textarea");
         textarea.value = url;
         textarea.style.position = "fixed";
@@ -58,7 +58,7 @@ export default function ShareButtonsInline({ title, url }) {
 
   return (
     <div className="flex flex-wrap justify-center items-center gap-3 mt-4">
-      {shareLinks.map(({ name, url, color, icon }) => (
+      {shareLinks.map(({ name, url, bgColor, icon }) => (
         <div
           key={name}
           className="relative"
@@ -69,12 +69,12 @@ export default function ShareButtonsInline({ title, url }) {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center justify-center w-10 h-10 rounded-full text-white ${color} hover:opacity-90`}
+            className={`flex items-center justify-center w-10 h-10 rounded-full ${bgColor}
+                        hover:opacity-90 transform transition duration-200 hover:-translate-y-1`}
           >
-            <img src={icon} alt={name} className="w-5 h-5" />
+            {icon}
           </a>
 
-          {/* Tooltip */}
           {hovered === name && (
             <span className="absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white text-xs px-2 py-1 rounded-md shadow-md">
               {name}
@@ -91,7 +91,8 @@ export default function ShareButtonsInline({ title, url }) {
       >
         <button
           onClick={handleCopy}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-700
+                     hover:bg-gray-300 transform transition duration-200 hover:-translate-y-1"
         >
           <Copy size={18} />
         </button>

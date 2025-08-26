@@ -1,100 +1,107 @@
 import { useState } from "react";
-import { Copy, Share2, Check } from "lucide-react";
+import { Copy } from "lucide-react";
 
 export default function ShareButtonsInline({ title, url }) {
   const [copied, setCopied] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(null);
+  const [hovered, setHovered] = useState(null);
 
   const shareLinks = [
     {
-      name: "Telegram",
+      name: "تلگرام",
       url: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-      color: "bg-[#0088cc]",
-      hoverColor: "hover:bg-[#0077b3]",
+      color: "bg-blue-500",
       icon: "/icons/telegram.svg",
     },
     {
-      name: "Instagram",
-      url: `https://www.instagram.com/?url=${encodeURIComponent(url)}`,
-      color: "bg-gradient-to-tr from-[#fdf497] via-[#fd5949] to-[#d6249f]",
-      hoverColor: "hover:opacity-90",
+      name: "اینستاگرام",
+      url: `https://www.instagram.com/?url=${encodeURIComponent(url)}`, // اینستاگرام share مستقیم نداره
+      color: "bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600",
       icon: "/icons/instagram.svg",
     },
     {
-      name: "Twitter",
-      url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-      color: "bg-[#1DA1F2]",
-      hoverColor: "hover:bg-[#1a8cd8]",
+      name: "ایکس",
+      url: `https://x.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
+      color: "bg-sky-500",
       icon: "/icons/x.svg",
     },
     {
-      name: "WhatsApp",
+      name: "واتساپ",
       url: `https://api.whatsapp.com/send?text=${encodeURIComponent(title + " " + url)}`,
-      color: "bg-[#25D366]",
-      hoverColor: "hover:bg-[#20bd5a]",
+      color: "bg-green-500",
       icon: "/icons/whatsapp.svg",
     },
   ];
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(url).then(() => {
+  const handleCopy = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        // حالت مدرن (HTTPS یا localhost)
+        await navigator.clipboard.writeText(url);
+      } else {
+        // fallback برای HTTP یا مرورگرهای قدیمی
+        const textarea = document.createElement("textarea");
+        textarea.value = url;
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    } catch (err) {
+      console.error("خطا در کپی لینک:", err);
+    }
   };
 
   return (
-    <div className="my-8 p-6 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border border-gray-200 shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center justify-center">
-        <Share2 size={20} className="ml-2" />
-        اشتراک‌گذاری این خبر
-      </h3>
-      
-      <div className="flex flex-wrap justify-center items-center gap-6">
-        {shareLinks.map(({ name, url, color, hoverColor, icon }) => (
+    <div className="flex flex-wrap justify-center items-center gap-3 mt-4">
+      {shareLinks.map(({ name, url, color, icon }) => (
+        <div
+          key={name}
+          className="relative"
+          onMouseEnter={() => setHovered(name)}
+          onMouseLeave={() => setHovered(null)}
+        >
           <a
-            key={name}
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`relative flex items-center justify-center w-14 h-14 rounded-full text-white transition-all duration-300 ${color} ${hoverColor} transform hover:scale-110 shadow-md hover:shadow-lg`}
-            onMouseEnter={() => setShowTooltip(name)}
-            onMouseLeave={() => setShowTooltip(null)}
-            aria-label={`اشتراک در ${name}`}
+            className={`flex items-center justify-center w-10 h-10 rounded-full text-white ${color} hover:opacity-90 transform transition duration-200 hover:-translate-y-1`}
           >
-            <img src={icon} alt={name} className="w-6 h-6" />
-            
-            {showTooltip === name && (
-              <div className="absolute -top-9 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-md whitespace-nowrap">
-                {name}
-                <div className="absolute w-2 h-2 bg-gray-800 rotate-45 bottom-[-4px] left-1/2 transform -translate-x-1/2"></div>
-              </div>
-            )}
+            <img src={icon} alt={name} className="w-5 h-5" />
           </a>
-        ))}
 
+          {/* Tooltip */}
+          {hovered === name && (
+            <span className="absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white text-xs px-2 py-1 rounded-md shadow-md">
+              {name}
+            </span>
+          )}
+        </div>
+      ))}
+
+      {/* دکمه کپی لینک */}
+      <div
+        className="relative"
+        onMouseEnter={() => setHovered("copy")}
+        onMouseLeave={() => setHovered(null)}
+      >
         <button
           onClick={handleCopy}
-          className={`relative flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 transform hover:scale-110 shadow-md hover:shadow-lg ${
-            copied ? "bg-green-500" : "bg-gray-200 hover:bg-gray-300"
-          }`}
-          aria-label="کپی لینک"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transform transition duration-200 hover:-translate-y-1"
         >
-          {copied ? (
-            <Check size={22} className="text-white" />
-          ) : (
-            <Copy size={22} className="text-gray-700" />
-          )}
-          
-          {copied && (
-            <div className="absolute -top-9 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-md">
-              کپی شد!
-              <div className="absolute w-2 h-2 bg-gray-800 rotate-45 bottom-[-4px] left-1/2 transform -translate-x-1/2"></div>
-            </div>
-          )}
+          <Copy size={18} />
         </button>
+
+        {(hovered === "copy" || copied) && (
+          <span className="absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white text-xs px-2 py-1 rounded-md shadow-md">
+            {copied ? "کپی شد!" : "کپی کردن لینک"}
+          </span>
+        )}
       </div>
-      
     </div>
   );
 }
