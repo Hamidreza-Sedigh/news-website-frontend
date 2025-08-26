@@ -23,9 +23,11 @@ export default function NewsFooter({ siteAddress, link, newsId, title }) {
 
       </div>
       
-      <ShareButtonsInline2 title={title} url={link} />
+      {/* <ShareButtonsInline title={title} url={link} /> */}
+      <div className="mt-4 mb-6">
+        <ShareButtonsInline title={title} url={link} />
+      </div>
 
-      {/* <ShareButtonsInline  title={title} url={link} /> */}
 
     </>
   );

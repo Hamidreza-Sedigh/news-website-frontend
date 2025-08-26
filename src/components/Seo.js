@@ -7,7 +7,7 @@ export default function Seo({
   image = '/default.jpg',
   type = 'article',
 }) {
-  const fullTitle = title ? `${title} | سایت خبری کهربا` : 'کهربا'
+  const fullTitle = title ? `${title} | سایت خبری کهربا` : 'کهربا نت'
 
   const siteUrl = url.startsWith('http') ? url : `http://kahrobanet.ir${url}`
 
