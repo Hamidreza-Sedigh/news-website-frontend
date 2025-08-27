@@ -56,7 +56,8 @@ export default function NewsDetail({ news, error }) {
         
         <NewsFooter 
           siteAddress={news.siteAddress} 
-          link={`http://kahrobanet.ir/news/${news.shortId}`}
+          sourceLink={news.link}
+          ourLink={`http://kahrobanet.ir/news/${news.shortId}`}
           newsId={news.shortId}
           title={news.title}
         />
