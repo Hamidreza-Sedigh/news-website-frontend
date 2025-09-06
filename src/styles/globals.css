@@ -38,3 +38,12 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+.news-content img {
+  display: block !important;
+  margin: 1rem auto !important;
+  max-width: 100%;
+  height: auto;
+  /* border-radius: 0.5rem; */
+}
+
