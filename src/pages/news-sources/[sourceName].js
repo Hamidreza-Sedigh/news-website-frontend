@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import NewsCard from "@/components/NewsCard"; // مسیر درست بده به کامپوننت
+import Pagination from "@/components/Pagination";
 
 export default function OneSourceNewsPage() {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function OneSourceNewsPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex justify-between items-center text-sm text-gray-700">
+          {/* <div className="flex justify-between items-center text-sm text-gray-700">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
@@ -81,7 +82,12 @@ export default function OneSourceNewsPage() {
             >
               بعدی
             </button>
-          </div>
+          </div> */}
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
         </>
       )}
     </div>

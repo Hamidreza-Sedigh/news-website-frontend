@@ -1,64 +1,83 @@
-import React from 'react'
-import Head from 'next/head'
-import NewsCard from '@/components/NewsCard' // مسیرت رو بر اساس پروژه خودت تنظیم کن
+// pages/[category].js
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Head from "next/head";
+import NewsCard from "@/components/NewsCard";
+import Pagination from "@/components/Pagination";
 
-export async function getServerSideProps(context) {
-  const { category } = context.params
-  console.log("TEST Category:", category);
+export default function CategoryPage() {
+  const router = useRouter();
+  const { category } = router.query;
 
-  try {
-    const res = await fetch(`http://localhost:8000/api/news?category=${encodeURIComponent(category)}&limit=20`)
-    const data = await res.json()
+  const [newsList, setNewsList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const pageSize = 10;
+  const [loading, setLoading] = useState(true);
 
-    return {
-      props: {
-        category,
-        //newsList: data || [],
-        newsList: Array.isArray(data) ? data : [], 
-      },
+  useEffect(() => {
+    if (category) {
+      setLoading(true);
+      fetch(
+        `/api/proxy/news/byCategory?category=${encodeURIComponent(
+          category
+        )}&page=${page}&pageSize=${pageSize}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setNewsList(data.news || []);
+          setTotal(data.total || 0);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("خطا در گرفتن خبرهای دسته:", err);
+          setLoading(false);
+        });
     }
-  } catch (error) {
-    console.error('Error fetching category news:', error)
-    return {
-      props: {
-        category,
-        newsList: [],
-      },
-    }
-  }
-}
+  }, [category, page]);
 
-export default function CategoryPage({ category, newsList }) {
+  const totalPages = Math.ceil(total / pageSize);
+
   return (
     <>
       <Head>
-        <title>دسته‌بندی: {category}</title>
+        <title>کهربا نت | اخبار {category}</title>
       </Head>
 
-      <div className="max-w-full px-4 py-6 rtl">
-        <h1 className="text-2xl font-bold mb-6 text-right">
+      <div className="max-w-4xl mx-auto px-4 py-10">
+        <h1 className="text-2xl font-bold mb-6 text-gray-800 text-right">
           اخبار دسته: <span className="text-blue-600">{category}</span>
         </h1>
 
-        <div className="grid grid-cols-1 gap-4">
-          {newsList.length === 0 && (
-            <p className="text-gray-500 text-right">هیچ خبری در این دسته وجود ندارد.</p>
-          )}
-          {Array.isArray(newsList) && newsList.length > 0 ? (
-            newsList.map((news) => (
-              <NewsCard key={news._id} news={news} 
-              showInfo={{
-                date: true,
-                source: true,
-                views: true,
-                category: false,
-              }}/>
-            ))
-          ) : (
-            <p className="text-center text-gray-500 mt-4">هیچ خبری در این دسته‌بندی موجود نیست.</p>
-          )}
-        </div>
+        {loading ? (
+          <p className="text-gray-500">در حال بارگذاری خبرها...</p>
+        ) : newsList.length === 0 ? (
+          <p className="text-gray-500 text-right">هیچ خبری در این دسته وجود ندارد.</p>
+        ) : (
+          <>
+            <div className="space-y-4 mb-6">
+              {newsList.map((news) => (
+                <NewsCard
+                  key={news._id}
+                  news={news}
+                  showInfo={{
+                    date: true,
+                    source: true,
+                    views: true,
+                    category: false,
+                  }}
+                />
+              ))}
+            </div>
+
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
+          </>
+        )}
       </div>
     </>
-  )
+  );
 }
