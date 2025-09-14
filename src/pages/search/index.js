@@ -1,32 +1,30 @@
-
-
-
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import NewsCard from '../../components/NewsCard';
+// pages/search/index.js
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import NewsCard from "../../components/NewsCard";
+import Pagination from "@/components/Pagination";
 
 export default function SearchPage() {
   const router = useRouter();
   const { q, page } = router.query;
+
   const [isReady, setIsReady] = useState(false);
   const [results, setResults] = useState([]);
+  const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // const [currentPage, setCurrentPage] = useState(Number(page) || 1);
   const [currentPage, setCurrentPage] = useState(1);
 
   const pageSize = 10;
 
+  // آماده شدن router و صفحه جاری
   useEffect(() => {
-    if (!router.isReady) return; // صبر کن تا router آماده باشد
+    if (!router.isReady) return;
 
     if (page) {
       const p = parseInt(page, 10);
-      if (!isNaN(p) && p > 0) {
-        setCurrentPage(p);
-      } else {
-        setCurrentPage(1);
-      }
+      if (!isNaN(p) && p > 0) setCurrentPage(p);
+      else setCurrentPage(1);
     } else {
       setCurrentPage(1);
     }
@@ -34,7 +32,7 @@ export default function SearchPage() {
     setIsReady(true);
   }, [router.isReady, page]);
 
-
+  // گرفتن نتایج جست‌وجو از API
   useEffect(() => {
     if (!isReady || !q) return;
 
@@ -43,13 +41,15 @@ export default function SearchPage() {
       setError(null);
       try {
         const res = await fetch(
-          `../api/proxy/news/search?q=${encodeURIComponent(q)}&page=${currentPage}&pageSize=${pageSize}`
+          `/api/proxy/news/search?q=${encodeURIComponent(q)}&page=${currentPage}&pageSize=${pageSize}`
         );
-        if (!res.ok) throw new Error('1خطا در دریافت نتایج');
+        if (!res.ok) throw new Error("خطا در دریافت نتایج");
         const data = await res.json();
+
         setResults(data.results || []);
+        setTotalResults(data.total || 0);
       } catch (err) {
-        setError(err.message || '2خطا در دریافت نتایج');
+        setError(err.message || "خطا در دریافت نتایج");
       } finally {
         setLoading(false);
       }
@@ -58,13 +58,18 @@ export default function SearchPage() {
     fetchResults();
   }, [isReady, q, currentPage]);
 
-  // تابع برای تغییر صفحه
+  // تغییر صفحه
   const handlePageChange = (newPage) => {
-    if (newPage < 1) return;
+    if (newPage < 1 || newPage > Math.ceil(totalResults / pageSize)) return;
     setCurrentPage(newPage);
-    // به روز رسانی URL (optional)
-    router.push(`/search?q=${encodeURIComponent(q)}&page=${newPage}`, undefined, { shallow: true });
+    router.push(
+      `/search?q=${encodeURIComponent(q)}&page=${newPage}`,
+      undefined,
+      { shallow: true }
+    );
   };
+
+  const totalPages = Math.ceil(totalResults / pageSize);
 
   return (
     <div className="max-w-4xl mx-auto p-4 mt-20">
@@ -74,8 +79,9 @@ export default function SearchPage() {
 
       {loading && <p>در حال بارگذاری...</p>}
       {error && <p className="text-red-600">{error}</p>}
-
-      {!loading && !error && results.length === 0 && <p>هیچ نتیجه‌ای یافت نشد.</p>}
+      {!loading && !error && results.length === 0 && (
+        <p>هیچ نتیجه‌ای یافت نشد.</p>
+      )}
 
       <ul className="space-y-4">
         {results.map((news) => (
@@ -85,27 +91,13 @@ export default function SearchPage() {
         ))}
       </ul>
 
-
-      {/* کنترل صفحه بندی ساده */}
-      {results.length === pageSize && (
-        <div className="flex justify-between mt-4">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-          >
-            قبلی
-          </button>
-
-          <span>صفحه {currentPage} در جستجو</span>
-
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            className="px-3 py-1 bg-gray-200 rounded"
-          >
-            بعدی
-          </button>
-        </div>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       )}
     </div>
   );
