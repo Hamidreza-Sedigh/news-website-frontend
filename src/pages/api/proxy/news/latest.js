@@ -1,3 +1,4 @@
+//api/proxy/news/latest:
 import { withAuth } from '../middlewares/withAuth';
 import { BACKEND_BASE_URL } from '../config/backend';
 

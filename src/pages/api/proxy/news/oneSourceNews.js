@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `${BACKEND_BASE_URL}/api/getOneSourceNews/${encodeURIComponent(sourceName)}?page=${page}&pageSize=${pageSize}`
+      `${BACKEND_BASE_URL}/api/news/getOneSourceNews/${encodeURIComponent(sourceName)}?page=${page}&pageSize=${pageSize}`
     );
 
     if (!response.ok) {

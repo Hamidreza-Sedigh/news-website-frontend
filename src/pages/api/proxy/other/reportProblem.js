@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const backendRes = await fetch(`${BACKEND_BASE_URL}/api/report`, {
+    const backendRes = await fetch(`${BACKEND_BASE_URL}/api/report-problem`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

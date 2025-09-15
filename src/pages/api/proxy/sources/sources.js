@@ -4,7 +4,7 @@ import { BACKEND_BASE_URL } from '../config/backend';
 
 async function handler(req, res) {
   try {
-    const response = await fetch(`${BACKEND_BASE_URL}/api/getSources`);
+    const response = await fetch(`${BACKEND_BASE_URL}/api/sources/getSources`);
     const data = await response.json();
     res.status(200).json(data);
   } catch (err) {
