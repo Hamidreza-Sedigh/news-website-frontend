@@ -108,7 +108,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400">
-              © {new Date().getFullYear()} سایت خبری. تمام حقوق محفوظ است.
+              © {new Date().getFullYear()} سایت خبری کهربا نت. تمام حقوق محفوظ است.
             </p>
             <div className="mt-4 md:mt-0 flex space-x-6">
               <Link href="/privacy" className="text-sm hover:text-blue-400 transition-colors">
