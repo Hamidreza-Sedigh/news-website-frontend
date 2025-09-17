@@ -1,142 +1,178 @@
 import { useState, Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronsUpDown, Check } from "lucide-react";
-
-const categories = ["طول", "جرم", "حجم", "دمای", "سرعت"];
-const units = {
-  طول: ["متر", "کیلومتر", "سانتی‌متر"],
-  جرم: ["گرم", "کیلوگرم", "پوند"],
-  حجم: ["لیتر", "میلی‌لیتر"],
-  دمای: ["سانتی‌گراد", "فارنهایت"],
-  سرعت: ["متر/ثانیه", "کیلومتر/ساعت"],
-};
+import { unitData } from "@/lib/units";
+import { convert } from "@/lib/convert";
 
 export default function UnitCard() {
-  const [category, setCategory] = useState(categories[0]);
-  const [fromUnit, setFromUnit] = useState(units[categories[0]][0]);
-  const [toUnit, setToUnit] = useState(units[categories[0]][1] ?? units[categories[0]][0]);
-  const [value, setValue] = useState("");
+  const categoryKeys = Object.keys(unitData);
 
-  function onCategoryChange(cat) {
-    setCategory(cat);
-    const list = units[cat] || [];
-    setFromUnit(list[0] ?? "");
-    setToUnit(list[1] ?? list[0] ?? "");
-  }
+  const [category, setCategory] = useState(categoryKeys[0]);
+  const [fromUnit, setFromUnit] = useState(
+    Object.keys(unitData[categoryKeys[0]].units)[0]
+  );
+  const [toUnit, setToUnit] = useState(
+    Object.keys(unitData[categoryKeys[0]].units)[1]
+  );
+  const [value, setValue] = useState("");
+  const [result, setResult] = useState(null);
+
+  const handleConvert = () => {
+    if (!value || isNaN(value)) return;
+    const res = convert(category, Number(value), fromUnit, toUnit);
+    setResult(res);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
-        <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-6">
-          <h1 className="text-white text-lg font-semibold">🔁 تبدیل واحد</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-lg">
+        <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+          تبدیل واحد
+        </h2>
+
+        {/* انتخاب دسته‌بندی */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            دسته‌بندی
+          </label>
+          <SelectBox
+            selected={category}
+            setSelected={(val) => {
+              setCategory(val);
+              const firstUnit = Object.keys(unitData[val].units)[0];
+              const secondUnit = Object.keys(unitData[val].units)[1];
+              setFromUnit(firstUnit);
+              setToUnit(secondUnit);
+            }}
+            options={categoryKeys.map((key) => ({
+              value: key,
+              label: unitData[key].label,
+            }))}
+          />
         </div>
 
-        <div className="bg-white p-6 space-y-5">
-          <p className="text-sm text-gray-500">یک دسته را انتخاب کن، واحدها را تعیین کن و مقدار را وارد کن.</p>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">نوع یکا</label>
-            <Listbox value={category} onChange={onCategoryChange}>
-              <div className="relative">
-                <Listbox.Button className="w-full bg-white border rounded-xl px-4 py-2 text-left flex justify-between items-center shadow-sm">
-                  <span>{category}</span>
-                  <ChevronsUpDown className="w-5 h-5 text-gray-400" />
-                </Listbox.Button>
-                <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                  <Listbox.Options className="absolute z-20 mt-1 w-full bg-white rounded-xl shadow-lg max-h-52 overflow-auto">
-                    {categories.map((c, i) => (
-                      <Listbox.Option key={i} value={c} className={({ active }) => `cursor-pointer px-4 py-2 ${active ? "bg-violet-50 text-violet-700" : "text-gray-700"}`}>
-                        {({ selected }) => (
-                          <div className="flex items-center">
-                            {selected && <Check className="w-4 h-4 ml-2 text-violet-600" />}
-                            <span>{c}</span>
-                          </div>
-                        )}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Transition>
-              </div>
-            </Listbox>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">از واحد</label>
-              <Listbox value={fromUnit} onChange={setFromUnit}>
-                <div className="relative">
-                  <Listbox.Button className="w-full bg-white border rounded-xl px-4 py-2 text-left flex justify-between items-center shadow-sm">
-                    <span>{fromUnit}</span>
-                    <ChevronsUpDown className="w-5 h-5 text-gray-400" />
-                  </Listbox.Button>
-                  <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                    <Listbox.Options className="absolute z-20 mt-1 w-full bg-white rounded-xl shadow-lg max-h-48 overflow-auto">
-                      {(units[category] || []).map((u, idx) => (
-                        <Listbox.Option key={idx} value={u} className={({ active }) => `cursor-pointer px-4 py-2 ${active ? "bg-violet-50 text-violet-700" : "text-gray-700"}`}>
-                          {({ selected }) => (
-                            <div className="flex items-center">
-                              {selected && <Check className="w-4 h-4 ml-2 text-violet-600" />}
-                              <span>{u}</span>
-                            </div>
-                          )}
-                        </Listbox.Option>
-                      ))}
-                    </Listbox.Options>
-                  </Transition>
-                </div>
-              </Listbox>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">به واحد</label>
-              <Listbox value={toUnit} onChange={setToUnit}>
-                <div className="relative">
-                  <Listbox.Button className="w-full bg-white border rounded-xl px-4 py-2 text-left flex justify-between items-center shadow-sm">
-                    <span>{toUnit}</span>
-                    <ChevronsUpDown className="w-5 h-5 text-gray-400" />
-                  </Listbox.Button>
-                  <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                    <Listbox.Options className="absolute z-20 mt-1 w-full bg-white rounded-xl shadow-lg max-h-48 overflow-auto">
-                      {(units[category] || []).map((u, idx) => (
-                        <Listbox.Option key={idx} value={u} className={({ active }) => `cursor-pointer px-4 py-2 ${active ? "bg-violet-50 text-violet-700" : "text-gray-700"}`}>
-                          {({ selected }) => (
-                            <div className="flex items-center">
-                              {selected && <Check className="w-4 h-4 ml-2 text-violet-600" />}
-                              <span>{u}</span>
-                            </div>
-                          )}
-                        </Listbox.Option>
-                      ))}
-                    </Listbox.Options>
-                  </Transition>
-                </div>
-              </Listbox>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">مقدار</label>
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="مثلاً 12.5"
-              className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-violet-300 shadow-sm"
-            />
-          </div>
-
-          <div className="mt-2 rounded-xl bg-violet-50 border border-violet-100 p-4 text-center">
-            <div className="text-sm text-violet-700">نتیجه</div>
-            <div className="mt-2 text-2xl font-semibold text-violet-800">0</div>
-            <div className="mt-1 text-xs text-gray-400">{value || "مقدار وارد نشده"}</div>
-          </div>
-
-          <div className="flex gap-3">
-            <button className="flex-1 py-2 rounded-xl bg-violet-600 text-white font-medium shadow hover:opacity-95">تبدیل</button>
-            <button className="flex-1 py-2 rounded-xl border border-gray-200 text-gray-700">پاک کردن</button>
-          </div>
+        {/* انتخاب واحد مبدا */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            از واحد
+          </label>
+          <SelectBox
+            selected={fromUnit}
+            setSelected={setFromUnit}
+            options={Object.keys(unitData[category].units).map((key) => ({
+              value: key,
+              label: unitData[category].units[key].label,
+            }))}
+          />
         </div>
+
+        {/* انتخاب واحد مقصد */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            به واحد
+          </label>
+          <SelectBox
+            selected={toUnit}
+            setSelected={setToUnit}
+            options={Object.keys(unitData[category].units).map((key) => ({
+              value: key,
+              label: unitData[category].units[key].label,
+            }))}
+          />
+        </div>
+
+        {/* مقدار ورودی */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            مقدار
+          </label>
+          <input
+            type="number"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="عدد مورد نظر را وارد کنید"
+          />
+        </div>
+
+        {/* دکمه تبدیل */}
+        <button
+          onClick={handleConvert}
+          className="w-full rounded-lg bg-blue-600 py-2 text-white font-medium hover:bg-blue-700 transition"
+        >
+          تبدیل
+        </button>
+
+        {/* نمایش نتیجه */}
+        {result !== null && (
+          <div className="mt-6 text-center">
+            <p className="text-lg font-semibold text-gray-800">
+              نتیجه:{" "}
+              <span className="text-blue-600">
+                {result.toLocaleString(undefined, {
+                  maximumFractionDigits: 4,
+                })}
+              </span>{" "}
+              {unitData[category].units[toUnit].label}
+            </p>
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+/* 📌 کامپوننت SelectBox */
+function SelectBox({ selected, setSelected, options }) {
+  const selectedOption = options.find((o) => o.value === selected);
+
+  return (
+    <Listbox value={selected} onChange={setSelected}>
+      <div className="relative">
+        <Listbox.Button className="relative w-full cursor-pointer rounded-lg border border-gray-300 bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm">
+          <span className="block truncate">{selectedOption.label}</span>
+          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+            <ChevronsUpDown className="h-5 w-5 text-gray-400" aria-hidden="true" />
+          </span>
+        </Listbox.Button>
+        <Transition
+          as={Fragment}
+          leave="transition ease-in duration-100"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+            {options.map((option) => (
+              <Listbox.Option
+                key={option.value}
+                value={option.value}
+                className={({ active }) =>
+                  `relative cursor-pointer select-none rounded-lg px-4 py-2 ${
+                    active ? "bg-blue-100 text-blue-900" : "text-gray-900"
+                  }`
+                }
+              >
+                {({ selected }) => (
+                  <>
+                    <span
+                      className={`block truncate ${
+                        selected ? "font-medium" : "font-normal"
+                      }`}
+                    >
+                      {option.label}
+                    </span>
+                    {selected ? (
+                      <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-blue-600">
+                        <Check className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                    ) : null}
+                  </>
+                )}
+              </Listbox.Option>
+            ))}
+          </Listbox.Options>
+        </Transition>
+      </div>
+    </Listbox>
   );
 }

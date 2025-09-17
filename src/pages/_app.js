@@ -4,9 +4,11 @@ import Footer from '@/components/Footer'
 
 export default function App({ Component, pageProps }) {
   return (
-    <div dir="rtl" className="font-vazir">
+    <div dir="rtl" className="font-vazir min-h-screen flex flex-col">
       <Header />
-      <Component {...pageProps} />
+      <main className="flex-1">
+        <Component {...pageProps} />
+      </main>
       <Footer />
     </div>
   )

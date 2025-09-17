@@ -10,7 +10,7 @@ const tools = [
   {
     title: 'تبدیل واحد',
     description: 'تبدیل انواع واحدهای طول، وزن، حجم و ...',
-    href: '/tools/unit-converter',
+    href: '/tools/unit-card',
   },
   {
     title: 'محاسبه قیمت طلا',
