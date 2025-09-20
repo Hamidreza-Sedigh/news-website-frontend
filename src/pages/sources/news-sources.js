@@ -1,4 +1,6 @@
 // pages/news-sources.js
+import Link from "next/link";
+
 export default function NewsSources({ sources }) {
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
@@ -11,20 +13,19 @@ export default function NewsSources({ sources }) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sources.map((sourceName) => (
-            <div
+            <Link
               key={sourceName}
-              className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-100 flex flex-col justify-between"
+              href={`/news-sources/${encodeURIComponent(sourceName)}`}
+              className="flex items-center justify-center text-center 
+                         bg-white rounded-2xl shadow-lg p-10 
+                         hover:shadow-2xl hover:bg-blue-50 hover:scale-105 
+                         transition-transform transition-colors duration-300 
+                         border border-gray-100 cursor-pointer"
             >
-              <h2 className="text-xl font-semibold mb-4 text-gray-900">
+              <h2 className="text-xl font-semibold text-gray-900">
                 {sourceName}
               </h2>
-              <a
-                href={`/news-sources/${encodeURIComponent(sourceName)}`}
-                className="inline-block mt-auto text-sm font-medium text-blue-600 hover:underline"
-              >
-                مشاهده خبرهای وب‌سایت
-              </a>
-            </div>
+            </Link>
           ))}
         </div>
       )}
