@@ -7,9 +7,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const categories = [
-  { name: 'سلامت', href: '/categories/سلامت' },
+  { name: 'فرهنگی هنری', href: '/categories/فرهنگی هنری' },
   { name: 'اجتماعی', href: '/categories/اجتماعی' },
   { name: 'علمی', href: '/categories/علمی' },
+  { name: 'سلامت و پزشکی', href: '/categories/سلامت و پزشکی' },
+  { name: 'جهان', href: '/categories/جهان' },
+  { name: 'حوادث و قضایی', href: '/categories/حوادث و قضایی' },
+  { name: 'سرگرمی و سبک زندگی', href: '/categories/سرگرمی و سبک زندگی' },
 ];
 
 const navigation = [
