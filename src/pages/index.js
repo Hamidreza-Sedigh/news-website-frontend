@@ -6,24 +6,34 @@ import PopularNews from '../components/PopularNews';
 import MostViewed from '../components/MostViewed';
 import { Disclosure, Transition } from '@headlessui/react'
 import { ChevronDownIcon  } from '@heroicons/react/20/solid'
+import FeaturedNewsCard from "@/components/FeaturedNewsCard";
+
 
 export async function getServerSideProps() {
   try {
-    const [latestRes, popularRes] = await Promise.all([
+    const [latestRes, topNewsRes, popularRes] = await Promise.all([
+      fetch('http://localhost:3000/api/proxy/news/latest'),
       fetch('http://localhost:3000/api/proxy/news/latest'),
       fetch('http://localhost:3000/api/proxy/news/popular'),
     ]);
 
     const props = {
       mainNews: [],
+      topNews: [],      // 👈 اضافه شد
       popularNews: [],
       error: null,
     };
 
     if (!latestRes.ok) {
       props.error = `خطا در دریافت اخبار: ${latestRes.status}`;
-    } else {
+    } 
+
+    if (latestRes.ok) {
       props.mainNews = await latestRes.json();
+    }
+
+    if (topNewsRes.ok) {
+      props.topNews = await topNewsRes.json();
     }
 
     if (popularRes.ok) {
@@ -42,7 +52,7 @@ export async function getServerSideProps() {
   }
 }
 
-export default function HomePage({ mainNews, popularNews, error }) {
+export default function HomePage({ mainNews, topNews, popularNews, error }) {
 
   if (error) {
     return (
@@ -115,13 +125,35 @@ export default function HomePage({ mainNews, popularNews, error }) {
 
           <main className="w-full md:flex-1">
             <h1 className="text-2xl md:text-3xl font-bold mb-4">آخرین اخبار</h1>
+            {/* <div className="flex flex-col md:flex-row gap-4 mb-6">
+              {topNews.slice(0, 2).map((news) => (
+                <FeaturedNewsCard
+                  key={news._id}
+                  title={news.title}
+                  imageUrl={news.imageUrl}
+                />
+              ))}
+            </div> */}
+            {/* 2 خبر اول با عکس بزرگ */}
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              {mainNews.slice(0, 2).map((news) => (
+                <FeaturedNewsCard
+                  key={news.shortId}
+                  news={news}
+                />
+              ))}
+            </div>
             <div className="grid grid-cols-1 gap-6">
               {Array.isArray(mainNews) && mainNews.length > 0 ? (
-                mainNews.map((news) =>
+                // mainNews.map((news) =>
+                // mainNews.map((news, index) =>
+                mainNews.slice(2).map((news) =>
                   news.shortId ? (
                     <NewsCard
                       key={news.shortId}
                       news={news}
+                      // showImage={index === 0} // 👈 فقط اولین خبر عکس داشته باشه
+                      showImage
                       showInfo={{
                         date: true,
                         source: true,
