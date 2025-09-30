@@ -49,25 +49,22 @@ export default function NewsCard({
     >
       {/* عکس خبر */}
       {showImage && news.imageUrl && (
-        // <div className="hidden md:block w-24 h-24 flex-shrink-0 relative">
-        <div className="hidden md:block relative w-40 h-28 flex-shrink-0  rounded-md">
-          <Image
+        <div className="hidden md:block relative w-40 h-28 flex-shrink-0 rounded-md overflow-hidden">
+          <img
             src={news.imageUrl}
             alt={title}
-            fill
-            sizes="(max-width: 768px) 100vw, 200px" // 👈 واکنش‌گرا
-            className="object-cover"
-            priority={false} // می‌تونی برای خبر اول بذاری true
+            className="w-full h-full object-cover rounded-md"
+            loading="lazy"
           />
         </div>
       )}
-
+  
       {/* متن خبر */}
       <div className="flex-1">
         <h2 className="text-lg font-semibold mb-2">{title}</h2>
         <p className="text-gray-700 text-sm line-clamp-3">{news.description}</p>
       </div>
-
+  
       {/* ستون اطلاعات فرعی */}
       <div className="w-fit flex-shrink-0 text-sm text-gray-500 text-left space-y-1 ml-auto">
         {showInfo.date && <div>📅 {date}</div>}
@@ -84,4 +81,5 @@ export default function NewsCard({
       </div>
     </Link>
   );
+  
 }
