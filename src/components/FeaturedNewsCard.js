@@ -16,6 +16,9 @@ export default function FeaturedNewsCard({ news }) {
             alt={news.title}
             fill
             className="object-cover"
+            priority={index === 0} // کارت اول → لود سریع
+            loading={index === 0 ? "eager" : "lazy"} // کارت‌های بعدی → lazy
+            sizes="(max-width: 768px) 100vw, 50vw" // واکنش‌گرا
           />
         </div>
         <div className="p-3">
@@ -25,3 +28,4 @@ export default function FeaturedNewsCard({ news }) {
     </Link>
   );
 }
+    
