@@ -64,6 +64,8 @@ const MostViewed = () => {
               key={news.shortId}
               news={news}
               highlightPopular={true}
+              layout="aside"                 // <- اضافه شد
+              showImage={false}              // تصویر مخفی باشه در aside      
               showInfo={{
                 date: true,
                 source: true,

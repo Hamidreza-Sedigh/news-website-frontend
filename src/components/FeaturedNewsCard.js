@@ -11,7 +11,7 @@ export default function FeaturedNewsCard({ news, index }) {
     >
       <div className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition">
         <div className="relative w-full h-60">
-          <Image
+          <img
             src={news.imageUrl}
             alt={news.title}
             fill
