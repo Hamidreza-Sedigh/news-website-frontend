@@ -1,4 +1,4 @@
-//FeaturedNewsCard.js
+// FeaturedNewsCard.js
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow, isToday, isYesterday } from 'date-fns-jalali';
@@ -14,7 +14,8 @@ function formatRelativeDate(dateString) {
 
 export default function FeaturedNewsCard({ news, index, showInfo = { date: true, source: true, category: true } }) {
   const date = formatRelativeDate(news.date);
-  
+  const hasImage = !!news.imageUrl;
+
   return (
     <Link
       href={`/news/${news.shortId}`}
@@ -22,24 +23,26 @@ export default function FeaturedNewsCard({ news, index, showInfo = { date: true,
       title={news.title}
       aria-label={`مشاهده خبر: ${news.title}`}
     >
-      <div className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition flex flex-col">
+      <div className={`bg-white rounded-lg overflow-hidden cursor-pointer hover:bg-gray-50 transition flex flex-col gap-3`}>
         
         {/* تصویر */}
-        <div className="relative w-full h-60 bg-white-100 flex items-center justify-center">
-          <Image
-            src={news.imageUrl}
-            alt={news.title}
-            fill
-            className="object-contain object-center"
-            priority={index === 0}
-            loading={index === 0 ? "eager" : "lazy"}
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-        </div>
+        {hasImage && (
+          <div className="relative w-full h-48 md:h-60 flex-shrink-0 rounded-md overflow-hidden">
+            <Image
+              src={news.imageUrl}
+              alt={news.title}
+              fill
+              className="object-cover"
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+        )}
 
         {/* عنوان */}
-        <div className="p-3 text-center">
-          <h2 className="text-lg font-bold line-clamp-2">{news.title}</h2>
+        <div className="px-3 text-center">
+          <h2 className="text-lg font-semibold line-clamp-2">{news.title}</h2>
         </div>
 
         {/* اطلاعات فرعی */}
@@ -48,7 +51,6 @@ export default function FeaturedNewsCard({ news, index, showInfo = { date: true,
           {showInfo.source && news.sourceName && <div>📰 {news.sourceName}</div>}
           {showInfo.category && news.category && <div>🏷️ {news.category}</div>}
         </div>
-
 
       </div>
     </Link>

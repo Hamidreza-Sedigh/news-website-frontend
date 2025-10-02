@@ -85,7 +85,8 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
       <div className="max-w-full px-4 py-6 text-right" dir="rtl">
         <div className="flex flex-col-reverse md:flex-row-reverse gap-6">
         {/* <aside className="w-full md:w-1/4 bg-gray-50 p-4 rounded"> */}
-        <aside className="w-full md:w-1/4 bg-white p-4  md:border-r md:border-black">
+        {/* <aside className="w-full md:w-1/4 bg-white p-4 md:border-r md:border-gray-300"> */}
+        <aside className="w-full md:w-1/4 bg-white p-4 md:border-r md:border-gray-300 hover:md:border-gray-400 transition-colors duration-200">
           <Disclosure defaultOpen as="div">
             {({ open }) => (
               <>
@@ -136,22 +137,23 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
             
             
             
-            {/* <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
               {mainNews.slice(0, 3).map((news) => (
                 <FeaturedNewsCard
                   key={news.shortId}
                   news={news}
                 />
               ))}
-            </div> */}
+            </div>
 
+            <hr className="my-4 border-t border-gray-200 opacity-50" />
 
 
             <div className="grid grid-cols-1 gap-6">
               {Array.isArray(mainNews) && mainNews.length > 0 ? (
                 // mainNews.map((news) =>
                 // mainNews.map((news, index) =>
-                mainNews.slice(2).map((news) =>
+                mainNews.slice(3).map((news) =>
                   news.shortId ? (
                     <NewsCard
                       key={news.shortId}
