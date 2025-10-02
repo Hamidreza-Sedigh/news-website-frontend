@@ -83,8 +83,6 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
       />
 
       <div className="max-w-full px-4 py-6 text-right" dir="rtl">
-        {/* <h1 className="text-2xl md:text-3xl font-bold mb-4">آخرین اخبار</h1> */}
-
         <div className="flex flex-col-reverse md:flex-row-reverse gap-6">
         {/* <aside className="w-full md:w-1/4 bg-gray-50 p-4 rounded"> */}
         <aside className="w-full md:w-1/4 bg-white p-4  md:border-r md:border-black">
@@ -135,14 +133,20 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
               ))}
             </div> */}
             {/* 2 خبر اول با عکس بزرگ */}
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              {mainNews.slice(0, 2).map((news) => (
+            
+            
+            
+            {/* <div className="flex flex-col md:flex-row gap-4 mb-6">
+              {mainNews.slice(0, 3).map((news) => (
                 <FeaturedNewsCard
                   key={news.shortId}
                   news={news}
                 />
               ))}
-            </div>
+            </div> */}
+
+
+
             <div className="grid grid-cols-1 gap-6">
               {Array.isArray(mainNews) && mainNews.length > 0 ? (
                 // mainNews.map((news) =>
@@ -152,7 +156,7 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
                     <NewsCard
                       key={news.shortId}
                       news={news}
-                      // showImage={index === 0} // 👈 فقط اولین خبر عکس داشته باشه
+                      mobileLayout="image-inline"
                       showImage
                       showInfo={{
                         date: true,

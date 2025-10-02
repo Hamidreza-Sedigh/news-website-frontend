@@ -63,7 +63,7 @@ const MostViewed = () => {
             <NewsCard
               key={news.shortId}
               news={news}
-              highlightPopular={true}
+              highlightPopular={false}
               layout="aside"                 // <- اضافه شد
               showImage={false}              // تصویر مخفی باشه در aside      
               showInfo={{
