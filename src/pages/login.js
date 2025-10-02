@@ -22,21 +22,6 @@ export default function LoginPage() {
     } else {
       setError(data.error || 'ورود ناموفق بود');
     }
-    
-    // const res = await login(form.email, form.password);
-    // const res = await fetch('http://localhost:8000/api/login', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(form),
-    // });
-
-    // const data = await res.json();
-    // if (res.ok && data.token) {
-    //   localStorage.setItem('token', data.token);
-    //   router.push('/dashboard');
-    // } else {
-    //   setError(data.error || 'ورود ناموفق بود');
-    // }
   };
 
   return (
@@ -51,7 +36,6 @@ export default function LoginPage() {
         </form>
         <p className="text-sm mt-4 text-center text-gray-600">
           حساب ندارید؟{' '}
-          {/* <a href="/register" className="text-green-600 hover:underline">ثبت‌نام کنید</a> */}
           <Link href="/register" className="text-green-600 hover:underline">
             ثبت‌نام کنید
           </Link>

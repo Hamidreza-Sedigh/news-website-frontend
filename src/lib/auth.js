@@ -1,5 +1,8 @@
 // lib/auth.js
-const API_URL = 'http://localhost:8000/api';
+//const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = 'http://kahrobanet.ir/api';
+
+
 
 export const login = async (email, password) => {
   const res = await fetch(`${API_URL}/auth/login`, {
