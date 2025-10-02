@@ -28,14 +28,14 @@ export default function FeaturedNewsCard({ news, index, showInfo = { date: true,
         {/* تصویر */}
         {hasImage && (
           <div className="relative w-full h-48 md:h-60 flex-shrink-0 rounded-md overflow-hidden">
-            <Image
+            <img
               src={news.imageUrl}
               alt={news.title}
-              fill
-              className="object-cover"
+              // fill
+              className="w-full h-full object-cover"
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              sizes="(max-width: 768px) 100vw, 50vw"
+              // sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
         )}

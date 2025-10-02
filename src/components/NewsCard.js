@@ -73,11 +73,11 @@ export default function NewsCard({
         <div className={`relative flex-shrink-0 rounded-md overflow-hidden order-1 md:order-2
           ${mobileLayout === 'image-top' ? 'w-full h-40 md:w-40 md:h-28' : 'w-24 h-24 md:w-40 md:h-28'}
         `}>
-          <Image
+          <img
             src={news.imageUrl}
             alt={title}
             fill
-            className="object-cover"
+            className="w-full h-full object-cover"
             sizes="(max-width: 768px) 100vw, 200px"
           />
         </div>
