@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
+import { register } from '../lib/auth';
+
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
@@ -15,11 +17,13 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
-    const res = await fetch('http://localhost:8000/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
+    const res = await register(form.username, form.email, form.password);
+    
+    // const res = await fetch('http://localhost:8000/api/auth/register', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(form),
+    // });
 
     const data = await res.json();
     if (res.ok) {
