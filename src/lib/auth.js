@@ -1,40 +1,50 @@
 // lib/auth.js
-//const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_URL = 'http://kahrobanet.ir:8000/api';
-
-
+// const API_URL = 'http://kahrobanet.ir:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const login = async (email, password) => {
-  const res = await fetch(`${API_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
-  const data = await res.json();
-  if (res.ok && data.token) {
-    localStorage.setItem('token', data.token);
+  try {
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.token) {
+      localStorage.setItem("token", data.token); // ✅ ذخیره توکن اینجا
+    }
+
+    return data;
+  } catch (err) {
+    return { error: "خطا در ارتباط با سرور" };
   }
-  return data;
 };
 
 export const register = async (username, email, password) => {
-  const res = await fetch(`${API_URL}/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, email, password }),
-  });
-  return await res.json();
+  try {
+    const res = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    return await res.json();
+  } catch (err) {
+    return { error: "خطا در ارتباط با سرور" };
+  }
 };
 
 export const logout = () => {
-  localStorage.removeItem('token');
-  window.location.href = '/login';
+  localStorage.removeItem("token");
+  window.location.href = "/login";
 };
 
 export const getToken = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem("token");
 };
 
 export const isLoggedIn = () => {
-  return !!localStorage.getItem('token');
+  return !!localStorage.getItem("token");
 };
