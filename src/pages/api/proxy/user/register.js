@@ -1,4 +1,4 @@
-// pages/api/proxy/user/login.js
+// pages/api/proxy/user/register.js
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000/api';
 
 export default async function handler(req, res) {
@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     }
   
     try {
-      const response = await fetch(`${BACKEND_URL}/auth/login`, {
+      const response = await fetch(`${BACKEND_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   
       res.status(response.status).json(data);
     } catch (err) {
-      console.error('Proxy login error:', err);
+      console.error('Proxy register error:', err);
       res.status(500).json({ error: 'خطا در ارتباط با سرور' });
     }
   }

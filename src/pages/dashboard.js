@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { logout } from '../lib/auth';
+import { logout } from '../lib/session';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
