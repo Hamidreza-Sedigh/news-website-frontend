@@ -1,4 +1,5 @@
 // pages/login.js
+import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -44,6 +45,12 @@ export default function LoginPage() {
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition">ورود</button>
         </form>
+        <p className="text-sm mt-4 text-center text-gray-600">
+          حساب ندارید؟{" "}
+          <Link href="/register" className="text-green-600 hover:underline">
+            ثبت‌نام کنید
+          </Link>
+        </p>
       </div>
     </div>
   );

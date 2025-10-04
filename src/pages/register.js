@@ -1,4 +1,5 @@
 // pages/register.js
+import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -44,6 +45,12 @@ export default function RegisterPage() {
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">ثبت‌نام</button>
         </form>
+        <p className="text-sm mt-4 text-center text-gray-600">
+          حساب دارید؟{' '}
+          <Link href="/login" className="text-blue-600 hover:underline">
+            وارد شوید
+          </Link>
+        </p>
       </div>
     </div>
   );
