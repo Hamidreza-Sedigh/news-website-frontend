@@ -1,6 +1,7 @@
+//src/lib/session.js
 export function logout() {
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    window.location.href = '/';
   }
   
   export function getToken() {
