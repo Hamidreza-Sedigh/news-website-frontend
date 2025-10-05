@@ -1,52 +1,50 @@
 // pages/dashboard/history.js
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { logout } from "@/lib/session";
 import Sidebar from "@/components/Sidebar";
 import NewsCard from "@/components/NewsCard";
 
 export default function History() {
   const [loading, setLoading] = useState(true);
+  const [readNews, setReadNews] = useState([]);
   const router = useRouter();
 
-  // داده‌های کام (خبرهای خوانده شده)
-  const [readNews, setReadNews] = useState([
-    {
-      title: "خبر اول خوانده شده",
-      description: "خلاصه کوتاه خبر اول برای نمایش در تاریخچه",
-      imageUrl: "/news1.jpg",
-      date: "۱۴ مهر ۱۴۰۴",
-      sourceName: "کهربانت",
-      views: 120,
-      category: "علم و تکنولوژی",
-    },
-    {
-      title: "خبر دوم خوانده شده",
-      description: "خلاصه کوتاه خبر دوم برای نمایش در تاریخچه",
-      imageUrl: "/news2.jpg",
-      date: "۱۳ مهر ۱۴۰۴",
-      sourceName: "کهربانت",
-      views: 95,
-      category: "اقتصاد",
-    },
-    {
-      title: "خبر سوم خوانده شده",
-      description: "خلاصه کوتاه خبر سوم برای نمایش در تاریخچه",
-      imageUrl: "/news3.jpg",
-      date: "۱۲ مهر ۱۴۰۴",
-      sourceName: "کهربانت",
-      views: 76,
-      category: "ورزش",
-    },
-  ]);
-
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    } else {
-      setLoading(false);
-    }
+    const fetchHistory = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:8000/api/dashboard/history", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+          throw new Error("خطا در دریافت تاریخچه خبرها");
+        }
+
+        const data = await res.json();
+
+        // داده‌ها در data.items قرار دارند و هر item.news اطلاعات خبر است
+        const newsList = data.items.map(item => ({
+          ...item.news,
+          readAt: item.readAt, // اگر بخوای تاریخ آخرین بازدید رو هم نمایش بدی
+        }));
+
+        setReadNews(newsList);
+      } catch (err) {
+        console.error(err);
+        setReadNews([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
   }, [router]);
 
   if (loading) return <p className="p-6">در حال بارگذاری...</p>;
@@ -77,8 +75,6 @@ export default function History() {
             ))}
           </div>
         )}
-
-
       </main>
     </div>
   );

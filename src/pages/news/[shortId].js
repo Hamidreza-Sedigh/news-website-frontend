@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Head from 'next/head';
 import NewsLayout from '../../components/NewsLayout';
 import NewsHeader from '../../components/NewsHeader';
@@ -7,6 +8,19 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import Seo from '@/components/Seo';
 
 export default function NewsDetail({ news, error }) {
+  // 🟢 ثبت بازدید فقط سمت کلاینت
+  useEffect(() => {
+    if (!news?.shortId) return;
+    const token = localStorage.getItem("token");
+
+    fetch(`http://localhost:8000/api/news/${news.shortId}/visit`, {
+      method: "POST",
+      headers: token
+        ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+        : { "Content-Type": "application/json" },
+    }).catch((err) => console.error("❌ Error logging visit:", err));
+  }, [news?.shortId]);
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -71,9 +85,7 @@ export async function getServerSideProps(context) {
 
   try {
     const res = await fetch(`http://localhost:8000/api/news/${shortId}`);
-    if (!res.ok) {
-      throw new Error('خبر یافت نشد');
-    }
+    if (!res.ok) throw new Error('خبر یافت نشد');
     const news = await res.json();
 
     return { props: { news } };
