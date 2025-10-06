@@ -13,7 +13,7 @@ import { ClipboardIcon } from "@heroicons/react/24/outline";
 export default function DateConverterPage() {
   const [jalaliDate, setJalaliDate] = useState(null);
   const [gregorianDate, setGregorianDate] = useState(null);
-  const [showTooltip, setShowTooltip] = useState(null);
+  const [copiedType, setCopiedType] = useState(null);
 
   const handleJalaliChange = (date) => {
     setJalaliDate(date);
@@ -57,14 +57,24 @@ export default function DateConverterPage() {
     }
   };
 
+  const copyText = async (text, type) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedType(type);
+      setTimeout(() => setCopiedType(null), 1500);
+    } catch (err) {
+      alert("کپی کردن انجام نشد!");
+    }
+  };
+
   const copySingleDate = (type) => {
     if (type === "jalali" && jalaliDate) {
       const str = `${jalaliDate.weekDay.name} ${jalaliDate.day} ${jalaliDate.month.name} ${jalaliDate.year}`;
-      navigator.clipboard.writeText(str);
+      copyText(str, "jalali");
     }
     if (type === "gregorian" && gregorianDate) {
       const str = `${gregorianDate.weekDay.name} ${gregorianDate.day} ${gregorianDate.month.name} ${gregorianDate.year}`;
-      navigator.clipboard.writeText(str);
+      copyText(str, "gregorian");
     }
   };
 
@@ -72,7 +82,7 @@ export default function DateConverterPage() {
     if (jalaliDate && gregorianDate) {
       const jalaliStr = `${jalaliDate.weekDay.name} ${jalaliDate.day} ${jalaliDate.month.name} ${jalaliDate.year}`;
       const gregStr = `${gregorianDate.weekDay.name} ${gregorianDate.day} ${gregorianDate.month.name} ${gregorianDate.year}`;
-      navigator.clipboard.writeText(`تاریخ انتخابی: ${jalaliStr} | ${gregStr}`);
+      copyText(`تاریخ انتخابی: ${jalaliStr} | ${gregStr}`, "both");
     }
   };
 
@@ -80,6 +90,25 @@ export default function DateConverterPage() {
     setJalaliDate(null);
     setGregorianDate(null);
   };
+
+  const TooltipButton = ({ type, onClick }) => (
+    <div className="relative group">
+      <button
+        type="button"
+        onClick={onClick}
+        className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 cursor-pointer"
+      >
+        <ClipboardIcon className="h-5 w-5" />
+      </button>
+
+      {/* Tooltip */}
+      <span
+        className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+      >
+        {copiedType === type ? "کپی شد!" : "کپی تاریخ"}
+      </span>
+    </div>
+  );
 
   return (
     <div className="max-w-2xl mx-auto mt-16 bg-white rounded-2xl shadow-lg p-8 space-y-8">
@@ -100,25 +129,10 @@ export default function DateConverterPage() {
               className="border rounded-lg p-2 flex-1"
             />
             {jalaliDate && (
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => {
-                    copySingleDate("jalali");
-                    setShowTooltip("jalali");
-                    setTimeout(() => setShowTooltip(null), 1500);
-                  }}
-                  className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
-                  aria-label="کپی تاریخ شمسی"
-                >
-                  <ClipboardIcon className="h-5 w-5" />
-                </button>
-                {showTooltip === "jalali" && (
-                  <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap min-w-max">
-                    کپی شد!
-                  </span>
-                )}
-              </div>
+              <TooltipButton
+                type="jalali"
+                onClick={() => copySingleDate("jalali")}
+              />
             )}
           </div>
         </div>
@@ -135,25 +149,10 @@ export default function DateConverterPage() {
               className="border rounded-lg p-2 flex-1"
             />
             {gregorianDate && (
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => {
-                    copySingleDate("gregorian");
-                    setShowTooltip("gregorian");
-                    setTimeout(() => setShowTooltip(null), 1500);
-                  }}
-                  className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
-                  aria-label="کپی تاریخ میلادی"
-                >
-                  <ClipboardIcon className="h-5 w-5" />
-                </button>
-                {showTooltip === "gregorian" && (
-                  <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 Wednesday 25 June 2025">
-                    کپی شد!
-                  </span>
-                )}
-              </div>
+              <TooltipButton
+                type="gregorian"
+                onClick={() => copySingleDate("gregorian")}
+              />
             )}
           </div>
         </div>
@@ -167,30 +166,25 @@ export default function DateConverterPage() {
         </p>
       )}
 
-      <div className="flex justify-between mt-8">
+      <div className="flex justify-between mt-8 relative">
         <button
-          onClick={() => {
-            copyBothDates();
-            setShowTooltip("both");
-            setTimeout(() => setShowTooltip(null), 1500);
-          }}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          onClick={copyBothDates}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition cursor-pointer"
         >
           کپی هر دو تاریخ
         </button>
         <button
           onClick={clearDates}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition cursor-pointer"
         >
           پاک کردن
         </button>
-        {showTooltip === "both" && (
-          <span className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1">
+        {copiedType === "both" && (
+          <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1">
             هر دو تاریخ کپی شد!
           </span>
         )}
       </div>
     </div>
   );
-
 }
