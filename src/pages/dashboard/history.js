@@ -12,40 +12,43 @@ export default function History() {
   useEffect(() => {
     const fetchHistory = async () => {
       const token = localStorage.getItem("token");
-
+  
       if (!token) {
         router.push("/login");
         return;
       }
-
+  
       try {
-        const res = await fetch("http://localhost:8000/api/dashboard/history", {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await fetch("/api/proxy/dashboard/history", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-
+  
         if (!res.ok) {
           throw new Error("خطا در دریافت تاریخچه خبرها");
         }
-
+  
         const data = await res.json();
-
+  
         // داده‌ها در data.items قرار دارند و هر item.news اطلاعات خبر است
         const newsList = data.items.map(item => ({
           ...item.news,
-          readAt: item.readAt, // اگر بخوای تاریخ آخرین بازدید رو هم نمایش بدی
+          readAt: item.readAt, // برای نمایش تاریخ آخرین بازدید
         }));
-
+  
         setReadNews(newsList);
       } catch (err) {
-        console.error(err);
+        console.error("❌ Error fetching history:", err);
         setReadNews([]);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchHistory();
   }, [router]);
+  
 
   if (loading) return <p className="p-6">در حال بارگذاری...</p>;
 

@@ -13,12 +13,17 @@ export default function NewsDetail({ news, error }) {
     if (!news?.shortId) return;
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:8000/api/news/${news.shortId}/visit`, {
+    fetch(`/api/proxy/news/view`, {
       method: "POST",
-      headers: token
-        ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
-        : { "Content-Type": "application/json" },
-    }).catch((err) => console.error("❌ Error logging visit:", err));
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ newsId: news.shortId }),
+    })
+    .then((res) => res.json())
+    .then((data) => console.log("✅ View counted:", data))
+    .catch((err) => console.error("❌ View error:", err));
   }, [news?.shortId]);
 
   if (error) {
