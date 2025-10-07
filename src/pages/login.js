@@ -25,6 +25,7 @@ export default function LoginPage() {
 
       if (res.ok && data.token) {
         localStorage.setItem('token', data.token); // token اینجا ست میشه
+        console.log("token from backend:", data.token);
         router.push('/dashboard');
       } else {
         setError(data.error || 'ورود ناموفق بود');
