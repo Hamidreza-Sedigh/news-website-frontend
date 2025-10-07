@@ -1,5 +1,5 @@
 // pages/api/proxy/news/view.js
-import { BACKEND_BASE_URL } from "@/config/backend";
+import { BACKEND_BASE_URL } from '../config/backend';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const authHeader = req.headers.authorization || ""; // ممکنه Bearer داشته باشه
 
     // ارسال درخواست به بک‌اند
-    const response = await fetch(`${BACKEND_BASE_URL}/api/news/view`, {
+    const response = await fetch(`${BACKEND_BASE_URL}/api/news/${newsId}/visit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

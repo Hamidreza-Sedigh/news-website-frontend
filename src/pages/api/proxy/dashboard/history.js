@@ -1,4 +1,4 @@
-import { BACKEND_BASE_URL } from "@/config/backend";
+import { BACKEND_BASE_URL } from '../config/backend';
 
 export default async function handler(req, res) {
   try {
