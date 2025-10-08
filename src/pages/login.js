@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import jwtDecode from "jwt-decode"; // ✅ import استاندارد
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -24,8 +25,18 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        localStorage.setItem('token', data.token); // token اینجا ست میشه
-        console.log("token from backend:", data.token);
+        localStorage.setItem('token', data.token); // ذخیره توکن
+
+        // ✅ استخراج نقش از JWT و ذخیره در localStorage
+        try {
+          const decoded = jwtDecode(data.token);
+          if (decoded.role) {
+            localStorage.setItem('userRole', decoded.role); // انگلیسی ذخیره می‌کنیم
+          }
+        } catch (err) {
+          console.error("خطا در استخراج نقش از توکن:", err);
+        }
+
         router.push('/dashboard');
       } else {
         setError(data.error || 'ورود ناموفق بود');
@@ -41,10 +52,29 @@ export default function LoginPage() {
       <div className="w-full max-w-md p-6 bg-white rounded-xl shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">🔐 ورود</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input name="email" type="email" placeholder="ایمیل" onChange={handleChange} required className="w-full px-4 py-2 border rounded-md" />
-          <input name="password" type="password" placeholder="رمز عبور" onChange={handleChange} required className="w-full px-4 py-2 border rounded-md" />
+          <input
+            name="email"
+            type="email"
+            placeholder="ایمیل"
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded-md"
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="رمز عبور"
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded-md"
+          />
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition">ورود</button>
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
+          >
+            ورود
+          </button>
         </form>
         <p className="text-sm mt-4 text-center text-gray-600">
           حساب ندارید؟{" "}

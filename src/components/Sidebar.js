@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { Menu, X, Home, User, Bookmark, Settings, Heart, LogOut, BookOpen, LayoutDashboard } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, Home, User, Bookmark, Settings, Heart, LogOut, BookOpen, LayoutDashboard, Users  } from "lucide-react";
 import { logout } from "../lib/session";
 
 
 export default function Sidebar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
   const menuItems = [
     { label: "خانه", path: "/", icon: <Home size={18} /> },
@@ -15,9 +16,20 @@ export default function Sidebar() {
     { label: "پروفایل من", path: "/dashboard/profile", icon: <User size={18} /> },
     { label: "خبرهای ذخیره‌شده", path: "/dashboard/saved", icon: <Bookmark size={18} /> },
     { label: "علاقه‌مندی‌ها", path: "/dashboard/favorites", icon: <Heart size={18} /> },
-    { label: "تاریخچه خبرهای خوانده شده", path: "/dashboard/history", icon: <BookOpen size={18} /> }, // آیتم جدید
+    { label: "تاریخچه خبرهای خوانده شده", path: "/dashboard/history", icon: <BookOpen size={18} /> },
+    // ⚡ فقط برای ادمین‌ها
+    userRole === "admin"
+      ? { label: "مدیریت کاربران", path: "/dashboard/users", icon: <Users size={18} /> }
+      : null, // اگر admin نبود، null بگذار
     { label: "تنظیمات", path: "/dashboard/settings", icon: <Settings size={18} /> },
-  ];
+  ].filter(Boolean); // حذف false یا null
+  
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserRole(localStorage.getItem("userRole"));
+    }
+  }, []);
 
   return (
     <>

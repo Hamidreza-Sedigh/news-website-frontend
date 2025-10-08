@@ -7,8 +7,11 @@ const categories = [
   { name: 'سیاسی', href: '/categories/سیاسی' },
   { name: 'اقتصادی', href: '/categories/اقتصادی' },
   { name: 'ورزشی', href: '/categories/ورزشی' },
-  { name: 'فرهنگی', href: '/categories/فرهنگی' },
+  { name: 'فرهنگی هنری', href: '/categories/فرهنگی' },
   { name: 'فناوری', href: '/categories/فناوری' },
+  { name: 'اجتماعی', href: '/categories/اجتماعی' },
+  { name: 'علمی', href: '/categories/علمی' },
+  { name: 'سلامت', href: '/categories/سلامت و پزشکی' },
 
 ]
 
@@ -55,17 +58,17 @@ export default function Footer() {
               <Link href="/contact" className="block hover:text-blue-400 transition-colors">
                 تماس با ما
               </Link>
-              <Link href="/advertise" className="block hover:text-blue-400 transition-colors">
+              {/* <Link href="/advertise" className="block hover:text-blue-400 transition-colors">
                 تبلیغات
-              </Link>
-              <Link href="/archive" className="block hover:text-blue-400 transition-colors">
-                آرشیو خبرها
+              </Link> */}
+              <Link href="/sources/news-sources" className="block hover:text-blue-400 transition-colors">
+                منابع خبری
               </Link>
             </div>
           </div>
 
           {/* اشتراک در خبرنامه */}
-          <div>
+          {/* <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
               اشتراک در خبرنامه
             </h3>
@@ -85,7 +88,7 @@ export default function Footer() {
                 ارسال
               </button>
             </form>
-          </div>
+          </div> */}
 
           {/* شبکه‌های اجتماعی */}
           <div>
