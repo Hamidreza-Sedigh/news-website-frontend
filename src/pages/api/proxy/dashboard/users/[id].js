@@ -1,28 +1,26 @@
-// pages/api/proxy/dashboard/users/[id].js
-
+// ✅ pages/api/proxy/dashboard/users/[id].js
 export default async function handler(req, res) {
   const { id } = req.query;
-
-  // آدرس بک‌اند اصلی‌ات (جایی که API واقعی هست)
   const backendUrl = `http://localhost:8000/api/dashboard/users/${id}`;
-
-  // توکن از هدر یا کوکی یا هرجایی که ذخیره کردی گرفته میشه
   const token = req.headers.authorization;
 
   try {
-    // ----- GET: دریافت اطلاعات کاربر -----
+    // ------------------------ GET ------------------------
     if (req.method === "GET") {
       const response = await fetch(backendUrl, {
-        headers: {
-          Authorization: token,
-        },
+        headers: { Authorization: token },
       });
 
-      const data = await response.json();
-      return res.status(response.status).json(data);
+      const text = await response.text();
+      try {
+        const data = JSON.parse(text);
+        return res.status(response.status).json(data);
+      } catch {
+        return res.status(500).json({ message: "Invalid JSON from backend" });
+      }
     }
 
-    // ----- PUT: ویرایش اطلاعات کاربر -----
+    // ------------------------ PUT ------------------------
     if (req.method === "PUT") {
       const response = await fetch(backendUrl, {
         method: "PUT",
@@ -37,10 +35,31 @@ export default async function handler(req, res) {
       return res.status(response.status).json(data);
     }
 
-    // اگر متد غیرمجاز بود
+    // ------------------------ DELETE ------------------------
+    if (req.method === "DELETE") {
+      const response = await fetch(backendUrl, {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      // ❗ حذف نیازی به body ندارد، چون فقط ID در URL است.
+      // بنابراین بهتر است body را نفرستی تا خطایی رخ ندهد.
+
+      const text = await response.text();
+      try {
+        const data = JSON.parse(text);
+        return res.status(response.status).json(data);
+      } catch {
+        return res.status(500).json({ message: "Invalid JSON from backend" });
+      }
+    }
+
+    // ------------------------ DEFAULT ------------------------
     return res.status(405).json({ message: "Method not allowed" });
   } catch (error) {
-    console.error("خطا در پراکسی کاربران:", error);
+    console.error("❌ خطا در پراکسی کاربران:", error);
     return res.status(500).json({ message: "Server error in proxy" });
   }
 }

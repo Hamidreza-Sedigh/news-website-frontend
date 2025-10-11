@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { User, Mail, Shield, Loader2 } from "lucide-react";
 import Sidebar from "../../../components/Sidebar"; // مسیر Sidebar را اصلاح کن
 import { useRouter } from "next/router";
-import { Edit } from "lucide-react"; // 👈 آیکون برای ویرایش
+import { Edit, Trash2 } from "lucide-react";
+
 
 export default function UsersPage() {
 	const router = useRouter();
@@ -24,6 +25,32 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
+  const handleDeleteUser = async (userId) => {
+    if (!confirm("آیا از حذف این کاربر مطمئن هستید؟")) return;
+  
+    try {
+      const res = await fetch(`/api/proxy/dashboard/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        alert("✅ کاربر با موفقیت حذف شد.");
+        setUsers(users.filter((u) => u._id !== userId)); // حذف از state
+      } else {
+        alert("❌ خطا در حذف کاربر: " + (data.message || "نامشخص"));
+      }
+    } catch (err) {
+      console.error("خطا در حذف کاربر:", err);
+      alert("❌ خطا در برقراری ارتباط با سرور.");
+    }
+  };
+  
+
   return (
     <div className="flex min-h-screen">
       <Sidebar />
@@ -44,12 +71,14 @@ export default function UsersPage() {
               <table className="min-w-full text-sm text-gray-700 border-separate border-spacing-0">
                 <thead className="bg-gray-50 border-b">
                   <tr>
+                    <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">نام کاربری</th>
                     <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">نام</th>
                     <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">ایمیل</th>
                     <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">نقش</th>
                     <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">وضعیت</th>
                     <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">engine admin</th>
                     <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">عملیات</th>
+                    <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">حذف</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -61,6 +90,11 @@ export default function UsersPage() {
                       <td className="py-3 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4 text-blue-500" />
+                          <span>{user.username}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
                           <span>{user.name}</span>
                         </div>
                       </td>
@@ -112,7 +146,7 @@ export default function UsersPage() {
                               : "bg-red-100 text-red-700"
                           }`}
                         >
-                          {user.crawlerAdmin ? "نیست" : "هست"}
+                          {user.crawlerAdmin ? "هست" : "نیست"}
                         </span>
                       </td>
 											<td className="py-3 px-4 whitespace-nowrap">
@@ -122,6 +156,15 @@ export default function UsersPage() {
                         >
                           <Edit className="w-4 h-4" />
                           <span>ویرایش</span>
+                        </button>
+                      </td>
+                      <td className="py-3 px-4 whitespace-nowrap text-right">
+                        <button
+                          onClick={() => handleDeleteUser(user._id)}
+                          className="text-red-600 hover:text-red-800 transition-colors flex items-center gap-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                           حذف
                         </button>
                       </td>
 
