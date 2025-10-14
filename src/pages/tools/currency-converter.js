@@ -5,24 +5,20 @@ export default function CurrencyConverter() {
   const [from, setFrom] = useState("USD");
   const [to, setTo] = useState("IRR");
   const [rate, setRate] = useState(null);
-  const [manualRate, setManualRate] = useState(false); // آیا کاربر نرخ را دستی تغییر داده؟
+  const [manualRate, setManualRate] = useState(false);
   const [result, setResult] = useState("");
 
-  // --- گرفتن نرخ واقعی از API ---
+  // --- گرفتن نرخ از API ---
   useEffect(() => {
-    if (from === to || manualRate) return; // اگر نرخ دستی شده، API فراخوانی نکن
+    if (manualRate) return; // اگر کاربر نرخ را دستی تغییر داده، از API نگیریم
 
     const fetchRate = async () => {
       try {
-        const res = await fetch(
-          `https://api.exchangerate.host/convert?from=${from}&to=${to}`
-        );
+        const res = await fetch(`/api/proxy/rate?base=${from}&target=${to}`);
         const data = await res.json();
-        if (data?.info?.rate) {
-          setRate(data.result);
-        }
+        setRate(data.rate);
       } catch (err) {
-        console.error("خطا در دریافت نرخ:", err);
+        console.error("Error fetching rate:", err);
       }
     };
 
@@ -31,7 +27,7 @@ export default function CurrencyConverter() {
 
   // --- محاسبه لحظه‌ای ---
   useEffect(() => {
-    if (!amount || !rate || from === to) {
+    if (!amount || !rate) {
       setResult("");
       return;
     }
@@ -40,7 +36,7 @@ export default function CurrencyConverter() {
       .toFixed(2)
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     setResult(`${formatted} ${to}`);
-  }, [amount, from, to, rate]);
+  }, [amount, rate, to]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-200">
@@ -50,19 +46,7 @@ export default function CurrencyConverter() {
         </h1>
 
         <div className="space-y-4">
-          {/* مبلغ */}
-          <div>
-            <label className="block text-gray-600 mb-1">مبلغ</label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="مثلاً 100"
-              className="w-full border border-gray-300 rounded-lg p-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* انتخاب ارز‌ها */}
+          {/* انتخاب ارزها */}
           <div className="flex justify-between gap-3">
             <div className="flex-1">
               <label className="block text-gray-600 mb-1">از ارز</label>
@@ -70,7 +54,7 @@ export default function CurrencyConverter() {
                 value={from}
                 onChange={(e) => {
                   setFrom(e.target.value);
-                  setManualRate(false); // تغییر ارز = نرخ دوباره از API گرفته شود
+                  setManualRate(false);
                 }}
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
@@ -103,6 +87,21 @@ export default function CurrencyConverter() {
             </div>
           </div>
 
+          {/* فاصله زیر انتخاب ارزها */}
+          <div className="h-4"></div>
+
+          {/* مبلغ */}
+          <div>
+            <label className="block text-gray-600 mb-1">مبلغ</label>
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="مثلاً 100"
+              className="w-full border border-gray-300 rounded-lg p-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+
           {/* نرخ فعلی + قابل ویرایش */}
           <div>
             <label className="block text-gray-600 mb-1">
@@ -113,7 +112,7 @@ export default function CurrencyConverter() {
               value={rate || ""}
               onChange={(e) => {
                 setRate(e.target.value);
-                setManualRate(true); // کاربر نرخ را دستی تغییر داد
+                setManualRate(true);
               }}
               placeholder="در حال دریافت..."
               className="w-full border border-gray-300 rounded-lg p-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-400"
