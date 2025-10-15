@@ -17,6 +17,11 @@ const tools = [
     description: 'برآورد قیمت طلا با توجه به وزن و اجرت',
     href: '/tools/gold-price',
   },
+  {
+    title: 'مبدل قیمت ارز',
+    description: 'محاسبه مبلغ ارزهای مختلف ',
+    href: '/tools/currency-converter',
+  },
 ]
 
 export default function ToolsPage() {
