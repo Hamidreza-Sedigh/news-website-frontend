@@ -41,6 +41,7 @@ export default function Sidebar() {
       ? [
           { label: "مدیریت کاربران", path: "/dashboard/users", icon: <Users size={18} /> },
           { label: "گزارش خرابی‌ها", path: "/dashboard/reports", icon: <FileWarning size={18} /> },
+          { label: "تماس با ما", path: "/dashboard/contact", icon: <FileWarning size={18} /> },
         ]
       : []),
 
