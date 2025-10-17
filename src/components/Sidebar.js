@@ -1,14 +1,32 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { Menu, X, Home, User, Bookmark, Settings, Heart, LogOut, BookOpen, LayoutDashboard, Users  } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home,
+  User,
+  Bookmark,
+  Settings,
+  Heart,
+  LogOut,
+  BookOpen,
+  LayoutDashboard,
+  Users,
+  FileWarning,
+} from "lucide-react";
 import { logout } from "../lib/session";
-
 
 export default function Sidebar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserRole(localStorage.getItem("userRole"));
+    }
+  }, []);
 
   const menuItems = [
     { label: "خانه", path: "/", icon: <Home size={18} /> },
@@ -17,19 +35,17 @@ export default function Sidebar() {
     { label: "خبرهای ذخیره‌شده", path: "/dashboard/saved", icon: <Bookmark size={18} /> },
     { label: "علاقه‌مندی‌ها", path: "/dashboard/favorites", icon: <Heart size={18} /> },
     { label: "تاریخچه خبرهای خوانده شده", path: "/dashboard/history", icon: <BookOpen size={18} /> },
-    // ⚡ فقط برای ادمین‌ها
-    userRole === "admin"
-      ? { label: "مدیریت کاربران", path: "/dashboard/users", icon: <Users size={18} /> }
-      : null, // اگر admin نبود، null بگذار
-    { label: "تنظیمات", path: "/dashboard/settings", icon: <Settings size={18} /> },
-  ].filter(Boolean); // حذف false یا null
-  
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setUserRole(localStorage.getItem("userRole"));
-    }
-  }, []);
+    // ⚡ فقط برای ادمین‌ها
+    ...(userRole === "admin"
+      ? [
+          { label: "مدیریت کاربران", path: "/dashboard/users", icon: <Users size={18} /> },
+          { label: "گزارش خرابی‌ها", path: "/dashboard/reports", icon: <FileWarning size={18} /> },
+        ]
+      : []),
+
+    { label: "تنظیمات", path: "/dashboard/settings", icon: <Settings size={18} /> },
+  ];
 
   return (
     <>
@@ -63,9 +79,10 @@ export default function Sidebar() {
 
           {/* دکمه خروج */}
           <div className="mt-auto sticky bottom-4 px-4">
-            <button 
+            <button
               onClick={logout}
-              className="flex items-center justify-between w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">
+              className="flex items-center justify-between w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+            >
               <span>خروج</span>
               <LogOut size={18} />
             </button>
@@ -93,9 +110,10 @@ export default function Sidebar() {
             </nav>
 
             <div className="mt-auto pt-4">
-              <button 
+              <button
                 onClick={logout}
-                className="flex items-center justify-between w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">
+                className="flex items-center justify-between w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+              >
                 <span>خروج</span>
                 <LogOut size={18} />
               </button>

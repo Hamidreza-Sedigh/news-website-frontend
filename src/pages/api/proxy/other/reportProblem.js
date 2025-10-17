@@ -7,6 +7,10 @@ export default async function handler(req, res) {
 
   const { newsId, url, description } = req.body;
 
+  
+  console.log("TEST in rp - newsId:",newsId);
+  console.log("TEST in rp - url:",url);
+  
   if (!newsId || !url) {
     console.log("newsId:",newsId);
     console.log("url:",url);
