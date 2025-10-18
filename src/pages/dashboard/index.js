@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // داده‌های کامپ
+  // داده‌های ماک
   const [stats, setStats] = useState({
     membershipDuration: '2 سال و 3 ماه',
     readNews: 124,
@@ -34,12 +34,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
-    } else {
-      setLoading(false);
-    }
+    if (!token) return router.push('/login');
+  
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/proxy/dashboard/stats', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setStats(data);
+        setLoading(false);
+      } catch (err) {
+        console.error('خطا در گرفتن آمار:', err);
+        setLoading(false);
+      }
+    };
+  
+    fetchStats();
   }, [router]);
+  
 
   if (loading) return <p>در حال بارگذاری...</p>;
 
