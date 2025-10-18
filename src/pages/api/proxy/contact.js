@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const token = req.headers.authorization;
-  const baseUrl = process.env.BACKEND_URL || "http://localhost:8080";
+  const baseUrl = process.env.BACKEND_URL || "http://localhost:8000";
 
   const url = `${baseUrl}/api/contact${req.query.id ? "/" + req.query.id : ""}${
     req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : ""
