@@ -33,25 +33,35 @@ export default function Dashboard() {
   ]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return router.push('/login');
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      const fetchStats = async () => {
+        try {
+          // دریافت آمار کلی
+          const resStats = await fetch("/api/proxy/dashboard/stats", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const statsData = await resStats.json();
+          setStats(statsData);
   
-    const fetchStats = async () => {
-      try {
-        const res = await fetch('/api/proxy/dashboard/stats', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setStats(data);
-        setLoading(false);
-      } catch (err) {
-        console.error('خطا در گرفتن آمار:', err);
-        setLoading(false);
-      }
-    };
-  
-    fetchStats();
+          // دریافت آمار هفتگی
+          const resWeekly = await fetch("/api/proxy/dashboard/weekly-reads", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const weeklyData = await resWeekly.json();
+          setChartData(weeklyData);
+        } catch (err) {
+          console.error("خطا در دریافت داده‌ها:", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchStats();
+    }
   }, [router]);
+  
   
 
   if (loading) return <p>در حال بارگذاری...</p>;
