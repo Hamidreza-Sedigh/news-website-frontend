@@ -44,23 +44,37 @@ export default function Dashboard() {
             headers: { Authorization: `Bearer ${token}` },
           });
           const statsData = await resStats.json();
-          setStats(statsData);
+          if (resStats.ok && statsData && typeof statsData === "object") {
+            setStats(statsData);
+          } else {
+            console.warn("داده‌های آمار کلی نامعتبر هستند:", statsData);
+            setStats({});
+          }
   
           // دریافت آمار هفتگی
           const resWeekly = await fetch("/api/proxy/dashboard/weekly-reads", {
             headers: { Authorization: `Bearer ${token}` },
           });
           const weeklyData = await resWeekly.json();
-          setChartData(weeklyData);
+          if (resWeekly.ok && Array.isArray(weeklyData)) {
+            setChartData(weeklyData);
+          } else {
+            console.warn("داده‌های آمار هفتگی نامعتبر هستند:", weeklyData);
+            setChartData([]); // آرایه خالی تا کرش نکند
+          }
         } catch (err) {
           console.error("خطا در دریافت داده‌ها:", err);
+          setStats({});
+          setChartData([]);
         } finally {
           setLoading(false);
         }
       };
+  
       fetchStats();
     }
   }, [router]);
+  
   
   
 
