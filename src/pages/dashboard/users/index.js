@@ -133,6 +133,7 @@ export default function UsersPage() {
                       <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">نام کاربری</th>
                       <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">نام</th>
                       <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">ایمیل</th>
+                      <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">شماره تلفن</th>
                       <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">نقش</th>
                       <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">وضعیت</th>
                       <th className="py-3 px-4 text-right font-semibold whitespace-nowrap">engine admin</th>
@@ -156,6 +157,8 @@ export default function UsersPage() {
                           <Mail className="w-4 h-4 text-gray-500" />
                           {user.email}
                         </td>
+
+                        <td className="py-3 px-4 whitespace-nowrap">{user.phone || "-"}</td>
 
                         <td className="py-3 px-4 whitespace-nowrap">
                           <span
