@@ -1,11 +1,10 @@
-// pages/login.js
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import jwtDecode from "jwt-decode"; // ✅ import استاندارد
+import jwtDecode from "jwt-decode";
 
 export default function LoginPage() {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ identifier: '', password: '' });
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -25,21 +24,19 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        localStorage.setItem('token', data.token); // ذخیره توکن
-
-        // ✅ استخراج نقش از JWT و ذخیره در localStorage
+        localStorage.setItem('token', data.token);
         try {
           const decoded = jwtDecode(data.token);
           if (decoded.role) {
-            localStorage.setItem('userRole', decoded.role); // انگلیسی ذخیره می‌کنیم
+            localStorage.setItem('userRole', decoded.role);
           }
         } catch (err) {
-          console.error("خطا در استخراج نقش از توکن:", err);
+          console.error("JWT decode error:", err);
         }
 
         router.push('/dashboard');
       } else {
-        setError(data.error || 'ورود ناموفق بود');
+        setError(data.message || data.error || 'ورود ناموفق بود');
       }
     } catch (err) {
       console.error(err);
@@ -53,9 +50,9 @@ export default function LoginPage() {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">🔐 ورود</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            name="email"
-            type="email"
-            placeholder="ایمیل"
+            name="identifier"
+            type="text"
+            placeholder="ایمیل، شماره تلفن یا نام کاربری"
             onChange={handleChange}
             required
             className="w-full px-4 py-2 border rounded-md"
