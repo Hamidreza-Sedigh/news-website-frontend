@@ -45,7 +45,7 @@ export default function NewsDetail({ news, error }) {
       <Seo
         title={news.title}
         description={news.description}
-        url={`http://localhost:8000/news/${news.shortId}`}
+        url={`http://kahrobanet.ir/news/${news.shortId}`}
         image={news.imageUrl}
       />
 
@@ -53,8 +53,8 @@ export default function NewsDetail({ news, error }) {
         meta={{
           title: news.title,
           description: news.description,
-          url: `http://localhost:8000/news/${news.shortId}`,
-          image: news.image || '/default.jpg',
+          url: `http://kahrobanet.ir/news/${news.shortId}`,
+          image: news.imageUrl || '/default.jpg',
         }}
       >
         <NewsHeader 
