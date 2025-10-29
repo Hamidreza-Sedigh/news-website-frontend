@@ -8,7 +8,7 @@ export default function Seo({
   type = 'article',
 }) {
   const fullTitle = title ? `${title} | سایت خبری کهربا` : 'کهربا نت'
-  const siteUrl = url.startsWith('http') ? url : `https://kahrobanet.ir${url}`
+  const siteUrl = url.startsWith('http') ? url : `http://kahrobanet.ir${url}`
   const shortDesc = description ? description.slice(0, 160) : 'آخرین اخبار روز ایران و جهان در سایت خبری کهربا نت.'
 
   return (
@@ -49,7 +49,7 @@ export default function Seo({
               name: "کهربا نت",
               logo: {
                 "@type": "ImageObject",
-                url: "https://kahrobanet.ir/favicon-32x32.png",
+                url: "http://kahrobanet.ir/favicon-32x32.png",
               },
             },
             mainEntityOfPage: {
