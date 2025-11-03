@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://kahrobanet.ir',
+  siteUrl: 'http://kahrobanet.ir',
   generateRobotsTxt: true,
   exclude: [
     '/admin/*',
@@ -18,7 +18,7 @@ module.exports = {
       },
     ],
     additionalSitemaps: [
-      'https://kahrobanet.ir/sitemap-news.xml',
+      'http://kahrobanet.ir/sitemap-news.xml',
     ],
   },
 };
