@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
+import Seo from '@/components/Seo';
 
 const tools = [
   {
@@ -31,7 +32,6 @@ export default function ToolsPage() {
         title={'ابزار | کهربا نت'}
         description={'ابزار کاربردی ، کهربا نت تبدیل تاریخ تبدیل واحد مبدل ارز'}
         url={`http://kahrobanet.ir/tools`}
-        image={news.imageUrl}
       />
       <div className="max-w-4xl mx-auto p-6">
         <h1 className="text-3xl font-bold mb-8 text-center">ابزارها</h1>
