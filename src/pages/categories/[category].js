@@ -16,6 +16,11 @@ export default function CategoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // وقتی دسته عوض می‌شود، برگرد به صفحه اول
+    setPage(1);
+  }, [category]);
+  
+  useEffect(() => {
     if (category) {
       setLoading(true);
       fetch(
@@ -73,7 +78,10 @@ export default function CategoryPage() {
             <Pagination
               page={page}
               totalPages={totalPages}
-              onPageChange={(newPage) => setPage(newPage)}
+              onPageChange={(newPage) => {
+                setPage(newPage);
+                window.scrollTo({ top: 0, behavior: "smooth" }); // پیمایش نرم به بالا
+              }}
             />
           </>
         )}
