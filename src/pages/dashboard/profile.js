@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef  } from "react";
 import { Loader2, Save, Upload } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
@@ -7,6 +7,10 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null); // فایل انتخاب‌شده
+  const [avatarPreview, setAvatarPreview] = useState(null); // آدرس پیش‌نمایش
+  const fileInputRef = useRef(null);
+
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -29,6 +33,77 @@ export default function Profile() {
     }
     if (token) fetchProfile();
   }, [token]);
+
+  useEffect(() => {
+    if (avatarFile) {
+      const url = URL.createObjectURL(avatarFile);
+      setAvatarPreview(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setAvatarPreview(null);
+    }
+  }, [avatarFile]);
+
+  // تابع برای کلیک روی دکمه تغییر تصویر که input[type=file] را باز کند
+  const handleChooseAvatar = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // محدودیت اندازه/نوع ساده (مثال: حداکثر 2MB و فقط تصویر)
+    if (!file.type.startsWith("image/")) {
+      alert("لطفاً فقط فایل تصویری انتخاب کنید.");
+      return;
+    }
+    const maxSizeMB = 2;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      alert(`حجم فایل نباید بیشتر از ${maxSizeMB}MB باشد.`);
+      return;
+    }
+
+    setAvatarFile(file);
+  };
+
+
+  // آپلود آواتار به سرور (multipart/form-data)
+  const handleUploadAvatar = async () => {
+    if (!avatarFile) {
+      alert("ابتدا یک تصویر انتخاب کنید.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const form = new FormData();
+      form.append("avatar", avatarFile);
+
+      const res = await fetch("../api/proxy/user/me", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // مهم: Content-Type را نریزید؛ مرورگر خود تعیین می‌کند
+        },
+        body: form,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "خطا در آپلود تصویر");
+
+      // فرض: سرور آدرس جدید آواتار را در data.avatar بر می‌گرداند
+      setUser((prev) => ({ ...prev, avatar: data.avatar }));
+      setAvatarFile(null);
+      alert("تصویر پروفایل با موفقیت آپلود شد.");
+    } catch (err) {
+      console.error(err);
+      alert("خطا در آپلود تصویر.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+
 
   // 📤 بروزرسانی اطلاعات کاربر
   const handleSave = async (e) => {
@@ -88,19 +163,52 @@ export default function Profile() {
 
           {/* تصویر آواتار */}
           <div className="flex flex-col items-center mb-6">
-            <img
-              src={user.avatar || "/default-avatar.png"}
-              alt="Avatar"
-              className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600 mb-3"
-            />
+          <img
+            src={avatarPreview || user.avatar || "/images/default-avatar.png"}
+            alt="Avatar"
+            className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600 mb-3"
+          />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+
+          <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={handleChooseAvatar}
               className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
             >
               <Upload className="w-4 h-4" />
-              تغییر تصویر
+              انتخاب تصویر
             </button>
+
+            {avatarFile && (
+              <>
+                <button
+                  type="button"
+                  onClick={handleUploadAvatar}
+                  className="px-3 py-1 bg-green-600 text-white rounded text-sm"
+                  disabled={saving}
+                >
+                  {saving ? "در حال آپلود..." : "آپلود"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAvatarFile(null)}
+                  className="px-3 py-1 bg-gray-300 text-sm rounded"
+                >
+                  لغو
+                </button>
+              </>
+            )}
           </div>
+        </div>
+
 
           <form onSubmit={handleSave} className="space-y-4">
             <div>
@@ -139,6 +247,25 @@ export default function Profile() {
                 value={user.phone || ""}
                 onChange={handleChange}
                 className="w-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            {/* 🔹 تاریخ ثبت‌نام (غیرقابل ویرایش) */}
+            <div>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                تاریخ ثبت‌نام
+              </label>
+              <input
+                type="text"
+                value={
+                  user.createdAt
+                    ? `${new Date(user.createdAt).toLocaleDateString("fa-IR")} ساعت ${new Date(
+                        user.createdAt
+                      ).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" })}`
+                    : "-"
+                }
+                readOnly
+                className="w-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-2 text-gray-600 dark:text-gray-400 cursor-not-allowed"
               />
             </div>
 
