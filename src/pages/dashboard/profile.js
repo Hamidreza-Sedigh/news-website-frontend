@@ -1,6 +1,9 @@
+//pages/dashboard/profile.js
 import { useEffect, useState, useRef  } from "react";
 import { Loader2, Save, Upload } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
+
+const backendURL = process.env.BACKEND_URL || "http://localhost:8000";
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
@@ -163,51 +166,53 @@ export default function Profile() {
 
           {/* تصویر آواتار */}
           <div className="flex flex-col items-center mb-6">
-          <img
-            src={avatarPreview || user.avatar || "/images/default-avatar.png"}
-            alt="Avatar"
-            className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600 mb-3"
-          />
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
+            <img
+              src={avatarPreview || 
+                (user.avatar ? `${backendURL}${user.avatar}` : "/images/default-avatar.jpg")
+              }
+              alt="Avatar"
+              className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600 mb-3"
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleChooseAvatar}
-              className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
-            >
-              <Upload className="w-4 h-4" />
-              انتخاب تصویر
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleChooseAvatar}
+                className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
+              >
+                <Upload className="w-4 h-4" />
+                انتخاب تصویر
+              </button>
 
-            {avatarFile && (
-              <>
-                <button
-                  type="button"
-                  onClick={handleUploadAvatar}
-                  className="px-3 py-1 bg-green-600 text-white rounded text-sm"
-                  disabled={saving}
-                >
-                  {saving ? "در حال آپلود..." : "آپلود"}
-                </button>
+              {avatarFile && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleUploadAvatar}
+                    className="px-3 py-1 bg-green-600 text-white rounded text-sm"
+                    disabled={saving}
+                  >
+                    {saving ? "در حال آپلود..." : "آپلود"}
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => setAvatarFile(null)}
-                  className="px-3 py-1 bg-gray-300 text-sm rounded"
-                >
-                  لغو
-                </button>
-              </>
-            )}
+                  <button
+                    type="button"
+                    onClick={() => setAvatarFile(null)}
+                    className="px-3 py-1 bg-gray-300 text-sm rounded"
+                  >
+                    لغو
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
 
 
           <form onSubmit={handleSave} className="space-y-4">
