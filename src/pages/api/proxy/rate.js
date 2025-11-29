@@ -1,19 +1,29 @@
 //api/proxy/rate.js
 import { withAuth } from "./middlewares/withAuth";
-import { BACKEND_BASE_URL } from "./config/backend";
 
 async function handler(req, res) {
   try {
+    const BASE_URL = process.env.BACKEND_URL;
     const base = req.query.base || "USD";
     const target = req.query.target || "IRR";
 
-    const response = await fetch(`${BACKEND_BASE_URL}/api/rate?base=${base}&target=${target}`);
-    const data = await response.json();
+    const response = await fetch(`${BASE_URL}/rate?base=${base}&target=${target}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.BACKEND_ACCESS_TOKEN}`,
+      },
+    });
 
-    res.status(200).json(data);
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message);
+    }
+
+    const data = await response.json();
+    return res.status(200).json(data);
+
   } catch (err) {
-    console.error("Error fetching rate:", err);
-    res.status(500).json({ error: "Server error" });
+    console.error("❌ Error fetching rate:", err);
+    return res.status(500).json({ error: "Server error" });
   }
 }
 

@@ -1,9 +1,9 @@
 // pages/api/proxy/news/byCategory.js
 import { withAuth } from "../middlewares/withAuth";
-import { BACKEND_BASE_URL } from "../config/backend";
 
 async function handler(req, res) {
   try {
+    const BASE_URL = process.env.BACKEND_URL;
     const { category, page = 1, pageSize = 10 } = req.query;
 
     if (!category) {
@@ -11,9 +11,7 @@ async function handler(req, res) {
     }
 
     const response = await fetch(
-      `${BACKEND_BASE_URL}/api/news?category=${encodeURIComponent(
-        category
-      )}&page=${page}&pageSize=${pageSize}`
+      `${BASE_URL}/news?category=${encodeURIComponent(category)}&page=${page}&pageSize=${pageSize}`
     );
 
     if (!response.ok) {
@@ -23,7 +21,7 @@ async function handler(req, res) {
     const data = await response.json();
     res.status(200).json(data);
   } catch (err) {
-    console.error("Error in byCategory proxy:", err);
+    console.error("❌ Error in /api/proxy/news/byCategory:", err);
     res.status(500).json({ error: "Server error" });
   }
 }

@@ -1,8 +1,10 @@
 // ✅ pages/api/proxy/dashboard/users/[id].js
 export default async function handler(req, res) {
   const { id } = req.query;
-  const backendUrl = `http://localhost:8000/api/dashboard/users/${id}`;
-  const token = req.headers.authorization;
+  const BASE_URL = process.env.BACKEND_URL;
+  const token = req.headers.authorization || "";
+
+  const backendUrl = `${BASE_URL}/dashboard/users/${id}`;
 
   try {
     // ------------------------ GET ------------------------
@@ -44,9 +46,6 @@ export default async function handler(req, res) {
         },
       });
 
-      // ❗ حذف نیازی به body ندارد، چون فقط ID در URL است.
-      // بنابراین بهتر است body را نفرستی تا خطایی رخ ندهد.
-
       const text = await response.text();
       try {
         const data = JSON.parse(text);
@@ -59,7 +58,7 @@ export default async function handler(req, res) {
     // ------------------------ DEFAULT ------------------------
     return res.status(405).json({ message: "Method not allowed" });
   } catch (error) {
-    console.error("❌ خطا در پراکسی کاربران:", error);
+    console.error("❌ Error in /api/proxy/dashboard/users/[id]:", error);
     return res.status(500).json({ message: "Server error in proxy" });
   }
 }

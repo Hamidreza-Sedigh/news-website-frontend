@@ -1,28 +1,22 @@
-import { BACKEND_BASE_URL } from '../config/backend';
-
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'فقط متد POST مجاز است.' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "فقط متد POST مجاز است." });
   }
 
   const { newsId, url, description } = req.body;
 
-  
-  console.log("TEST in rp - newsId:",newsId);
-  console.log("TEST in rp - url:",url);
-  
   if (!newsId || !url) {
-    console.log("newsId:",newsId);
-    console.log("url:",url);
-    return res.status(400).json({ message: 'شناسه خبر و آدرس الزامی هستند.' });
+    return res.status(400).json({ message: "شناسه خبر و آدرس الزامی هستند." });
   }
 
   try {
-    const backendRes = await fetch(`${BACKEND_BASE_URL}/api/report-problem`, {
-      method: 'POST',
+    const BASE_URL = process.env.BACKEND_URL;
+
+    const backendRes = await fetch(`${BASE_URL}/report-problem`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': `Bearer TOKEN` اگر لازم باشد
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${process.env.BACKEND_ACCESS_TOKEN}` اگر لازم باشد
       },
       body: JSON.stringify({ newsId, url, description }),
     });
@@ -30,7 +24,7 @@ export default async function handler(req, res) {
     const data = await backendRes.json();
     res.status(backendRes.status).json(data);
   } catch (err) {
-    console.error('Proxy error:', err);
-    res.status(500).json({ message: 'خطا در اتصال به سرور اصلی.' });
+    console.error("❌ Proxy /report-problem error:", err);
+    res.status(500).json({ message: "خطا در اتصال به سرور اصلی." });
   }
 }

@@ -1,5 +1,3 @@
-import { BACKEND_BASE_URL } from '../config/backend';
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "فقط متد POST مجاز است." });
@@ -11,12 +9,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    
-    const backendRes = await fetch(`${BACKEND_BASE_URL}/api/contact`, {
+    const BASE_URL = process.env.BACKEND_URL;
+
+    const backendRes = await fetch(`${BASE_URL}/contact`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        //Authorization: `Bearer YOUR_SECRET_TOKEN`, // در صورت نیاز
+        // Authorization: `Bearer ${process.env.BACKEND_ACCESS_TOKEN}` در صورت نیاز
       },
       body: JSON.stringify(req.body),
     });
@@ -24,7 +23,7 @@ export default async function handler(req, res) {
     const data = await backendRes.json();
     res.status(backendRes.status).json(data);
   } catch (err) {
-    console.error("Proxy error:", err);
+    console.error("❌ Proxy /contact error:", err);
     res.status(500).json({ message: "خطا در اتصال به سرور اصلی." });
   }
 }
