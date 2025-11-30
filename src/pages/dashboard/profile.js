@@ -4,6 +4,7 @@ import { Loader2, Save, Upload } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
 const backendURL = process.env.BACKEND_URL || "http://localhost:8000";
+const imageBase = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
@@ -167,8 +168,12 @@ export default function Profile() {
           {/* تصویر آواتار */}
           <div className="flex flex-col items-center mb-6">
             <img
-              src={avatarPreview || 
-                (user.avatar ? `${backendURL}${user.avatar}` : "/images/default-avatar.jpg")
+              src={
+                avatarPreview || 
+                (user?.avatar 
+                  ? `${imageBase}${user.avatar}` 
+                  : "/images/default-avatar.jpg"
+                )
               }
               alt="Avatar"
               className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600 mb-3"

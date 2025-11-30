@@ -1,3 +1,4 @@
+//api/proxy/user/me.js
 const BASE_URL = process.env.BACKEND_URL;
 
 export const config = {
