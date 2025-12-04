@@ -1,0 +1,14 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /register
+
+# Host
+Host: http://kahrobanet.ir
+
+# Sitemaps
+Sitemap: http://kahrobanet.ir/sitemap-static.xml
+Sitemap: http://kahrobanet.ir/sitemap-news.xml
