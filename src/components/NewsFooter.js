@@ -1,6 +1,8 @@
 import ReportButton from './ReportButton';
 import ShareButtonsInline from "./ShareButton";
 import ShareButtonsInline2 from "./ShareButton2";
+import RelatedNews from "./RelatedNews";
+
 
 export default function NewsFooter({ siteAddress, sourceLink, ourLink, newsId, title }) {
   
@@ -23,6 +25,7 @@ export default function NewsFooter({ siteAddress, sourceLink, ourLink, newsId, t
 
       </div>
       
+      {/* Share Buttons */}
       {/* <ShareButtonsInline title={title} url={ourLink} /> */}
       <div className="mt-4 mb-6">
         <ShareButtonsInline title={title} url={ourLink} />
@@ -30,6 +33,12 @@ export default function NewsFooter({ siteAddress, sourceLink, ourLink, newsId, t
       {/* <div className="mt-4 mb-6">
         <ShareButtonsInline2 title={title} url={ourLink} />
       </div> */}
+
+      {/* Related News */}
+      <div>
+        <RelatedNews shortId={newsId} />
+      </div>
+
 
 
     </>
