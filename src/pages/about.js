@@ -66,7 +66,7 @@ export default function AboutPage() {
         <Disclosure>
           {({ open }) => (
             <>
-              <Disclosure.Button className="flex w-full justify-between items-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4 text-left text-lg font-semibold text-white shadow-md hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300">
+              <Disclosure.Button className="flex w-full justify-between items-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-4 text-right text-lg font-semibold text-white shadow-md hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300">
                 <span>سیاست‌های حریم خصوصی و ذخیره اطلاعات کاربر</span>
                 <ChevronUpIcon
                   className={`${

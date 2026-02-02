@@ -57,7 +57,7 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
   if (error) {
     return (
       <div className="max-w-full px-4 py-6 text-right" dir="rtl">
-        <h1 className="text-2xl font-bold mb-4">آخرین اخبار</h1>
+        <h1 className="text-2xl font-bold mb-4">آخرین اخبار ایران و جهان</h1>
         <p className="text-red-600 font-semibold">خطا: {error}</p>
       </div>
     )
@@ -66,7 +66,7 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
   if (!mainNews || mainNews.length === 0) {
     return (
       <div className="max-w-full px-4 py-6 text-right" dir="rtl">
-        <h1 className="text-2xl font-bold mb-4">آخرین اخبار</h1>
+        <h1 className="text-2xl font-bold mb-4">آخرین اخبار ایران و جهان</h1>
         <p>هیچ خبری یافت نشد.</p>
       </div>
     )
@@ -75,8 +75,8 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
   return (
     <>
       <Seo
-        title="صفحه اصلی"
-        description="جدیدترین اخبار ایران و جهان در دسته‌بندی‌های مختلف"
+        title="آخرین اخبار ایران و جهان"
+        description="آخرین و جدیدترین اخبار ایران و جهان، اخبار اقتصادی، سیاسی و اجتماعی را لحظه‌ای در سایت خبری کهربا نت دنبال کنید"
         url="/"
         image="/og-home.jpg"
         type="website"
@@ -123,7 +123,7 @@ export default function HomePage({ mainNews, topNews, popularNews, error }) {
 
 
           <main className="w-full md:flex-1">
-            <h1 className="text-2xl md:text-3xl font-bold mb-4">آخرین اخبار</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-4">آخرین اخبار ایران و جهان</h1>
             {/* <div className="flex flex-col md:flex-row gap-4 mb-6">
               {topNews.slice(0, 2).map((news) => (
                 <FeaturedNewsCard

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import NewsCard from "@/components/NewsCard";
 import Pagination from "@/components/Pagination";
+import Seo from '@/components/Seo';
 
 export default function CategoryPage() {
   const router = useRouter();
@@ -45,13 +46,24 @@ export default function CategoryPage() {
 
   return (
     <>
+      {category && (
+        <Seo
+          title={`آخرین اخبار ${category}`}
+          description={`جدیدترین و آخرین اخبار ${category} ایران و جهان را در سایت خبری کهربا نت دنبال کنید. پوشش لحظه‌ای، تیترهای مهم و تحلیل خبرها.`}
+          url={`/category/${category}`}
+          // image={`/og-category-${category}.jpg`}
+          image="/og-category-default.jpg"
+          type="website"
+        />
+      )}  
+    
       <Head>
         <title>کهربا نت | اخبار {category}</title>
       </Head>
 
       <div className="max-w-4xl mx-auto px-4 py-10">
         <h1 className="text-2xl font-bold mb-6 text-gray-800 text-right">
-          اخبار دسته: <span className="text-blue-600">{category}</span>
+          آخرین اخبار <span className="text-blue-600">{category}</span>
         </h1>
 
         {loading ? (

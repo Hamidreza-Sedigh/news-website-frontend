@@ -47,6 +47,7 @@ export default function NewsDetail({ news, error }) {
         description={news.description}
         url={`http://kahrobanet.ir/news/${news.shortId}`}
         image={news.imageUrl}
+        type="article"
       />
 
       <NewsLayout
