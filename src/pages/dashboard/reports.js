@@ -1,10 +1,20 @@
+// pages/dashboard/reports.js
 import { useEffect, useState } from "react";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "@/components/Sidebar";
 import { Loader2, CheckCircle } from "lucide-react";
 import moment from "moment-jalaali";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
+import { useApi } from "@/hooks/useApi";
+
 moment.loadPersian({ usePersianDigits: true });
 
 export default function ReportsPage() {
+  const { loading: authLoading, accessDenied } = useAuthGuard({
+    allowedRoles: ["admin"],
+    onRoleFail: "deny",
+  });
+  const api = useApi();
+
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(0);
@@ -13,47 +23,61 @@ export default function ReportsPage() {
 
   const fetchReports = async (page = pageNumber) => {
     setLoading(true);
-    const res = await fetch(
-      `/api/proxy/reports?pageNumber=${page}&pageSize=${pageSize}`,
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      }
-    );
-    const data = await res.json();
+    try {
+      const data = await api.get(
+        `/api/proxy/reports?pageNumber=${page}&pageSize=${pageSize}`
+      );
 
-    if (data?.success) {
       setReports(data.data || []);
       setTotal(data.total || 0);
-    } else {
-      console.warn("⚠️ Failed to load reports:", data);
+    } catch (err) {
+      console.warn("⚠️ Failed to load reports:", err);
       setReports([]);
       setTotal(0);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
+    if (authLoading || accessDenied) return;
     fetchReports();
-  }, [pageNumber]);
+  }, [authLoading, accessDenied, pageNumber]);
 
   const markAsRead = async (id) => {
-    await fetch(`/api/proxy/reports?id=${id}`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    fetchReports();
+    try {
+      await api.patch(`/api/proxy/reports/?id=${id}`);
+      fetchReports();
+    } catch (err) {
+      console.error("⚠️ Error marking report as read:", err);
+    }
   };
 
   const deleteReport = async (id) => {
     if (!confirm("آیا مطمئنی؟")) return;
-    await fetch(`/api/proxy/reports?id=${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    fetchReports();
+    try {
+      await api.del(`/api/proxy/reports?id=${id}`);
+      fetchReports();
+    } catch (err) {
+      console.error("⚠️ Error deleting report:", err);
+    }
   };
 
   const totalPages = Math.ceil(total / pageSize);
+
+  if (authLoading || loading)
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-600">
+        <Loader2 className="animate-spin w-6 h-6 mr-2" /> در حال بارگذاری...
+      </div>
+    );
+
+  if (accessDenied)
+    return (
+      <div className="flex items-center justify-center h-screen text-red-500">
+        دسترسی مجاز نیست
+      </div>
+    );
 
   return (
     <div className="flex bg-gray-50 min-h-screen">
@@ -63,11 +87,7 @@ export default function ReportsPage() {
           📋 گزارش خرابی‌ها
         </h1>
 
-        {loading ? (
-          <div className="flex items-center gap-2 text-gray-500">
-            <Loader2 className="animate-spin" /> در حال بارگذاری...
-          </div>
-        ) : reports.length === 0 ? (
+        {reports.length === 0 ? (
           <p className="text-gray-600">هیچ گزارشی یافت نشد.</p>
         ) : (
           <>
@@ -140,7 +160,6 @@ export default function ReportsPage() {
                 </tbody>
               </table>
             </div>
-
 
             {/* صفحه‌بندی */}
             <div className="flex justify-between items-center mt-6">

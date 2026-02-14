@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useAuth } from "@/context/AuthContext";
 import { useState, useEffect } from "react";
 import {
   Menu,
@@ -16,12 +17,18 @@ import {
   FileWarning,
   MailPlus
 } from "lucide-react";
-import { logout } from "../lib/session";
+
 
 export default function Sidebar() {
   const router = useRouter();
+  const { logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [userRole, setUserRole] = useState(null);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -82,7 +89,7 @@ export default function Sidebar() {
           {/* دکمه خروج */}
           <div className="mt-auto sticky bottom-4 px-4">
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="flex items-center justify-between w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
             >
               <span>خروج</span>
@@ -113,7 +120,7 @@ export default function Sidebar() {
 
             <div className="mt-auto pt-4">
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="flex items-center justify-between w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
               >
                 <span>خروج</span>

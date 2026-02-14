@@ -1,41 +1,74 @@
+// pages/dashboard/favorites.js
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Sidebar from "@/components/Sidebar";
 import NewsCard from "@/components/NewsCard";
-import { Heart } from "lucide-react";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
+import { useApi } from "@/hooks/useApi";
 
 export default function Favorites() {
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const { loading: authLoading, accessDenied } = useAuthGuard();
+  const api = useApi();
 
-  const [favoriteNews, setFavoriteNews] = useState([
-    {
-      title: "خبر علاقه‌مندی اول",
-      description: "خلاصه کوتاه خبر اول علاقه‌مندی",
-      imageUrl: "/news1.jpg",
-      date: "۱۴ مهر ۱۴۰۴",
-      sourceName: "کهربانت",
-      views: 120,
-      category: "علم و تکنولوژی",
-    },
-    {
-      title: "خبر علاقه‌مندی دوم",
-      description: "خلاصه کوتاه خبر دوم علاقه‌مندی",
-      imageUrl: "/news2.jpg",
-      date: "۱۳ مهر ۱۴۰۴",
-      sourceName: "کهربانت",
-      views: 95,
-      category: "اقتصاد",
-    },
-  ]);
+  const [loading, setLoading] = useState(true);
+  const [favoriteNews, setFavoriteNews] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) router.push("/login");
-    else setLoading(false);
-  }, [router]);
+    if (authLoading || accessDenied) return;
 
-  if (loading) return <p className="p-6">در حال بارگذاری...</p>;
+    const fetchFavorites = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        // 🔹 مسیر API فعلا placeholder است
+        // const data = await api.get("/api/proxy/dashboard/news/favorites");
+        const data = {news: []} ;
+
+        // فرض: data.news آرایه‌ای از خبرهای علاقه‌مندی است
+        setFavoriteNews(data.news || []);
+      } catch (err) {
+        console.error("خطا در دریافت علاقه‌مندی‌ها:", err);
+        setError("خطا در دریافت علاقه‌مندی‌ها");
+
+        // fallback mock برای تست اولیه
+        setFavoriteNews([
+          {
+            title: "خبر علاقه‌مندی اول",
+            description: "خلاصه کوتاه خبر اول علاقه‌مندی",
+            imageUrl: "/news1.jpg",
+            date: "۱۴ مهر ۱۴۰۴",
+            sourceName: "کهربانت",
+            views: 120,
+            category: "علم و تکنولوژی",
+          },
+          {
+            title: "خبر علاقه‌مندی دوم",
+            description: "خلاصه کوتاه خبر دوم علاقه‌مندی",
+            imageUrl: "/news2.jpg",
+            date: "۱۳ مهر ۱۴۰۴",
+            sourceName: "کهربانت",
+            views: 95,
+            category: "اقتصاد",
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
+  }, [authLoading, accessDenied]);
+
+  if (authLoading || loading)
+    return <p className="p-6">در حال بارگذاری...</p>;
+
+  if (accessDenied)
+    return (
+      <div className="flex items-center justify-center h-screen text-red-500">
+        دسترسی مجاز نیست
+      </div>
+    );
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -44,6 +77,9 @@ export default function Favorites() {
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
           علاقه‌مندی‌ها
         </h1>
+
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
         {favoriteNews.length === 0 ? (
           <p className="text-gray-700 dark:text-gray-200">
             هیچ خبری به علاقه‌مندی‌ها اضافه نشده است.
@@ -51,7 +87,12 @@ export default function Favorites() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {favoriteNews.map((news, idx) => (
-              <NewsCard key={idx} news={news} highlightPopular={false} showImage={true} />
+              <NewsCard
+                key={idx}
+                news={news}
+                highlightPopular={false}
+                showImage={true}
+              />
             ))}
           </div>
         )}

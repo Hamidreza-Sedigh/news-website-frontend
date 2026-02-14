@@ -1,10 +1,20 @@
+// pages/dashboard/contact.js
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { Loader2, CheckCircle } from "lucide-react";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
+import { useApi } from "@/hooks/useApi";
 import moment from "moment-jalaali";
+
 moment.loadPersian({ usePersianDigits: true });
 
 export default function ContactMessagesPage() {
+  const { loading: authLoading, accessDenied } = useAuthGuard({
+    allowedRoles: ["admin"],
+    onRoleFail: "deny",
+  });
+  const api = useApi();
+
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(0);
@@ -13,43 +23,60 @@ export default function ContactMessagesPage() {
 
   const fetchMessages = async (page = pageNumber) => {
     setLoading(true);
-    const res = await fetch(
-      `/api/proxy/contact?pageNumber=${page}&pageSize=${pageSize}`,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-    );
-    const data = await res.json();
-    if (data?.success) {
+    try {
+      const data = await api.get(
+        `/api/proxy/contact?pageNumber=${page}&pageSize=${pageSize}`
+      );
       setMessages(data.data || []);
       setTotal(data.total || 0);
-    } else {
+    } catch (err) {
+      console.error("⚠️ Failed to load messages:", err);
       setMessages([]);
       setTotal(0);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
+    if (authLoading || accessDenied) return;
     fetchMessages();
-  }, [pageNumber]);
+  }, [authLoading, accessDenied, pageNumber]);
 
   const markAsRead = async (id) => {
-    await fetch(`/api/proxy/contact?id=${id}`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    fetchMessages();
+    try {
+      await api.patch(`/api/proxy/contact?id=${id}`);
+      fetchMessages();
+    } catch (err) {
+      console.error("⚠️ Error marking message as read:", err);
+    }
   };
 
   const deleteMessage = async (id) => {
     if (!confirm("آیا مطمئنی؟")) return;
-    await fetch(`/api/proxy/contact?id=${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    fetchMessages();
+    try {
+      await api.del(`/api/proxy/contact?id=${id}`);
+      fetchMessages();
+    } catch (err) {
+      console.error("⚠️ Error deleting message:", err);
+    }
   };
 
   const totalPages = Math.ceil(total / pageSize);
+
+  if (authLoading || loading)
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-600">
+        <Loader2 className="animate-spin w-6 h-6 mr-2" /> در حال بارگذاری...
+      </div>
+    );
+
+  if (accessDenied)
+    return (
+      <div className="flex items-center justify-center h-screen text-red-500">
+        دسترسی مجاز نیست
+      </div>
+    );
 
   return (
     <div className="flex bg-gray-50 min-h-screen">

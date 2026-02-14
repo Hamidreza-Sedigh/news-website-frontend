@@ -1,49 +1,64 @@
-//src/pages/login.js
-import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+// src/pages/login.js
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/router";
 import jwtDecode from "jwt-decode";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
-  const [form, setForm] = useState({ identifier: '', password: '' });
-  const [error, setError] = useState('');
+  const [form, setForm] = useState({ identifier: "", password: "" });
+  const [error, setError] = useState("");
   const router = useRouter();
+  const { login, isAuthenticated, loading } = useAuth();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await fetch('/api/proxy/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+  try {
+    const res = await fetch("/api/proxy/user/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (res.ok && data.token) {
-        localStorage.setItem('token', data.token);
-        try {
-          const decoded = jwtDecode(data.token);
-          if (decoded.role) {
-            localStorage.setItem('userRole', decoded.role);
-          }
-        } catch (err) {
-          console.error("JWT decode error:", err);
-        }
-
-        router.push('/dashboard');
-      } else {
-        setError(data.message || data.error || 'ورود ناموفق بود');
+    if (res.ok && data.token) {
+      let role = null;
+      try {
+        const decoded = jwtDecode(data.token);
+        role = decoded.role || null;
+      } catch (err) {
+        console.error("JWT decode error:", err);
       }
-    } catch (err) {
-      console.error(err);
-      setError('خطا در ارتباط با سرور');
+
+      // حالا userData را از /me بگیریم
+      const meRes = await fetch("/api/proxy/user/me", {
+        headers: { Authorization: `Bearer ${data.token}` },
+      });
+      const userData = await meRes.json();
+
+      login(data.token, role, userData.user || userData);
+
+      router.push("/dashboard");
+    } else {
+      setError(data.message || data.error || "ورود ناموفق بود");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setError("خطا در ارتباط با سرور");
+  }
+};
+
+
+  // اگر کاربر قبلاً لاگین است، مستقیم به داشبورد
+  if (!loading && isAuthenticated) {
+    router.push("/dashboard");
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">

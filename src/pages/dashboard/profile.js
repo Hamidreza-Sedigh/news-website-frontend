@@ -2,42 +2,45 @@
 import { useEffect, useState, useRef  } from "react";
 import { Loader2, Save, Upload } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
+import { useApi } from "@/hooks/useApi";
 
-const backendURL = process.env.BACKEND_URL || "http://localhost:8000";
 const imageBase = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
 export default function Profile() {
+  // ✅ همه کاربران لاگین شده می‌توانند ببینند
+  const { loading: authLoading, accessDenied } = useAuthGuard();
+
+  const api = useApi();
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
-  const [avatarFile, setAvatarFile] = useState(null); // فایل انتخاب‌شده
-  const [avatarPreview, setAvatarPreview] = useState(null); // آدرس پیش‌نمایش
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const fileInputRef = useRef(null);
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
-  // 🟢 دریافت اطلاعات کاربر لاگین‌شده
+  // 🟢 دریافت اطلاعات کاربر
   useEffect(() => {
-    async function fetchProfile() {
+    if (authLoading || accessDenied) return;
+
+    const fetchProfile = async () => {
       try {
-        const res = await fetch("/api/proxy/user/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "خطا در دریافت اطلاعات");
-        setUser(data);
+        const data = await api.get("/api/proxy/user/me");
+        setUser(data.user || data); // بستگی به بک‌اند
       } catch (err) {
         console.error(err);
         setError("خطا در دریافت اطلاعات کاربر");
       } finally {
         setLoading(false);
       }
-    }
-    if (token) fetchProfile();
-  }, [token]);
+    };
 
+    fetchProfile();
+  }, [authLoading, accessDenied]);
+
+  // پیش‌نمایش آواتار انتخاب شده
   useEffect(() => {
     if (avatarFile) {
       const url = URL.createObjectURL(avatarFile);
@@ -48,54 +51,30 @@ export default function Profile() {
     }
   }, [avatarFile]);
 
-  // تابع برای کلیک روی دکمه تغییر تصویر که input[type=file] را باز کند
-  const handleChooseAvatar = () => {
-    fileInputRef.current?.click();
-  };
+  const handleChooseAvatar = () => fileInputRef.current?.click();
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // محدودیت اندازه/نوع ساده (مثال: حداکثر 2MB و فقط تصویر)
-    if (!file.type.startsWith("image/")) {
-      alert("لطفاً فقط فایل تصویری انتخاب کنید.");
-      return;
-    }
-    const maxSizeMB = 2;
-    if (file.size > maxSizeMB * 1024 * 1024) {
-      alert(`حجم فایل نباید بیشتر از ${maxSizeMB}MB باشد.`);
-      return;
-    }
+    if (!file.type.startsWith("image/")) return alert("لطفاً فقط فایل تصویری انتخاب کنید.");
+    if (file.size > 2 * 1024 * 1024) return alert("حجم فایل نباید بیشتر از 2MB باشد.");
 
     setAvatarFile(file);
   };
 
-
-  // آپلود آواتار به سرور (multipart/form-data)
   const handleUploadAvatar = async () => {
-    if (!avatarFile) {
-      alert("ابتدا یک تصویر انتخاب کنید.");
-      return;
-    }
+    if (!avatarFile) return alert("ابتدا یک تصویر انتخاب کنید.");
     setSaving(true);
+
     try {
       const form = new FormData();
       form.append("avatar", avatarFile);
 
-      const res = await fetch("../api/proxy/user/me", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // مهم: Content-Type را نریزید؛ مرورگر خود تعیین می‌کند
-        },
-        body: form,
+      const data = await api.post("/api/proxy/user/me", form, {
+        // Content-Type را نریزید
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "خطا در آپلود تصویر");
-
-      // فرض: سرور آدرس جدید آواتار را در data.avatar بر می‌گرداند
       setUser((prev) => ({ ...prev, avatar: data.avatar }));
       setAvatarFile(null);
       alert("تصویر پروفایل با موفقیت آپلود شد.");
@@ -107,24 +86,12 @@ export default function Profile() {
     }
   };
 
-
-
-  // 📤 بروزرسانی اطلاعات کاربر
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
     setError("");
     try {
-      const res = await fetch("/api/proxy/user/me", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(user),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "خطا در ذخیره تغییرات");
+      await api.put("/api/proxy/user/me", user);
       alert("✅ تغییرات ذخیره شد");
     } catch (err) {
       console.error(err);
@@ -134,19 +101,21 @@ export default function Profile() {
     }
   };
 
-  // تغییر مقدار فیلدها
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  if (loading)
+  if (authLoading || loading)
     return (
       <div className="flex items-center justify-center h-screen text-gray-600">
         <Loader2 className="w-6 h-6 animate-spin mr-2" />
         در حال بارگذاری پروفایل...
       </div>
     );
+
+  if (accessDenied)
+    return <div className="flex items-center justify-center h-screen text-red-500">دسترسی مجاز نیست</div>;
 
   if (!user)
     return (
