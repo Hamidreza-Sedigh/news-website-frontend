@@ -56,12 +56,12 @@ export default function Dashboard() {
       <Sidebar />
 
       <main className="flex-1 p-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">داشبورد خبری</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">داشبورد</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
           <StatCard title="مدت عضویت" value={stats.membershipDuration} icon="🗓️" />
           <StatCard title="تعداد خبرهای خوانده شده" value={stats.readNews} icon="📰" />
-          <StatCard title="تعداد خبرهای سیو شده" value={stats.savedNews} icon="💾" />
+          <StatCard title="تعداد خبرهای ذخیره شده" value={stats.savedNews} icon="💾" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
