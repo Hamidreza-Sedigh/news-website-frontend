@@ -16,7 +16,7 @@ const MostViewed = () => {
     setLoading(true);
     try {
       // فرض می‌کنیم backend از query ?period=day/week/month پشتیبانی می‌کند
-      const res = await fetch(`/api/proxy/news/popular?period=${period}&limit=5`);
+      const res = await fetch(`/api/proxy/news/popular?period=${period}&limit=10`);
       if (!res.ok) throw new Error("خطا در دریافت اخبار");
       const data = await res.json();
       setNewsData(data);
