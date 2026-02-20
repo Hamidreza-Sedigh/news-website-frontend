@@ -4,6 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import NewsCard from "@/components/NewsCard";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { useApi } from "@/hooks/useApi";
+import toast from "react-hot-toast";
 
 export default function History() {
   const { loading: authLoading, accessDenied } = useAuthGuard();
@@ -33,15 +34,36 @@ export default function History() {
       } catch (err) {
         console.error("❌ Error fetching history:", err);
         setError("خطا در دریافت تاریخچه");
-        setReadNews([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchHistory();
-    // ⚠️ api در dependency نیست، فقط authLoading و accessDenied بررسی می‌شوند
   }, [authLoading, accessDenied]);
+
+  // ✅ حذف آیتم
+  const handleRemove = async (newsId) => {
+    const previousState = [...readNews];
+
+    // Optimistic update
+    setReadNews((prev) => prev.filter((item) => item._id !== newsId));
+
+    try {
+      await api.delete("/api/proxy/dashboard/history", {
+        data: { newsId },
+      });
+
+      toast.success("خبر از تاریخچه حذف شد");
+    } catch (err) {
+      console.error("❌ Error removing history:", err);
+
+      // rollback
+      setReadNews(previousState);
+
+      toast.error("حذف انجام نشد");
+    }
+  };
 
   if (authLoading || loading)
     return <p className="p-6">در حال بارگذاری...</p>;
@@ -69,13 +91,28 @@ export default function History() {
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {readNews.map((news, idx) => (
-              <NewsCard
-                key={idx}
-                news={news}
-                highlightPopular={false}
-                showImage={true}
-              />
+            {readNews.map((news) => (
+              <div key={news._id} className="relative group">
+                
+                {/* ❌ دکمه حذف - سمت چپ */}
+                <button
+                  onClick={() => handleRemove(news._id)}
+                  className="absolute top-2 left-2 z-10 w-7 h-7
+                             bg-black/70 text-white rounded-full
+                             flex items-center justify-center
+                             opacity-0 group-hover:opacity-100
+                             transition-all duration-200
+                             hover:bg-red-600 hover:scale-110"
+                >
+                  ×
+                </button>
+
+                <NewsCard
+                  news={news}
+                  highlightPopular={false}
+                  showImage={true}
+                />
+              </div>
             ))}
           </div>
         )}
