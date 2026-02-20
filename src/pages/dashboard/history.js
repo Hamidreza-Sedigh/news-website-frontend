@@ -51,7 +51,7 @@ export default function History() {
 
     try {
       await api.delete("/api/proxy/dashboard/history", {
-        data: { newsId },
+        newsId,
       });
 
       toast.success("خبر از تاریخچه حذف شد");
