@@ -7,7 +7,7 @@ const categories = [
   { name: 'سیاسی', href: '/categories/سیاسی' },
   { name: 'اقتصادی', href: '/categories/اقتصادی' },
   { name: 'ورزشی', href: '/categories/ورزشی' },
-  { name: 'فرهنگی هنری', href: '/categories/فرهنگی' },
+  { name: 'فرهنگی هنری', href: '/categories/فرهنگی هنری' },
   { name: 'فناوری', href: '/categories/فناوری' },
   { name: 'اجتماعی', href: '/categories/اجتماعی' },
   { name: 'علمی', href: '/categories/علمی' },
