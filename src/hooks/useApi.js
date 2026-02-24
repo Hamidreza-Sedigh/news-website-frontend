@@ -25,7 +25,6 @@ export const useApi = () => {
       });
     } catch (error) {
       if (error.status === 401) {
-        // 🔐 توکن منقضی شده
         logout();
         router.replace("/login");
       }
@@ -40,13 +39,18 @@ export const useApi = () => {
 
   return {
     get: (url, headers) => request({ url, method: "GET", headers }),
+
     post: (url, body, headers) =>
       request({ url, method: "POST", body, headers }),
+
     put: (url, body, headers) =>
       request({ url, method: "PUT", body, headers }),
-    del: (url, headers) =>
-      request({ url, method: "DELETE", headers }),
-    patch: (url, headers) =>
-      request({ url, method: "PATCH", headers }),
+
+    patch: (url, body, headers) =>
+      request({ url, method: "PATCH", body, headers }),
+
+    // ✅ این قسمت اصلاح شد
+    delete: (url, body, headers) =>
+      request({ url, method: "DELETE", body, headers }),
   };
 };
