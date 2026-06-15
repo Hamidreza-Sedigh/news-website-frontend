@@ -1,4 +1,5 @@
 // pages/api/proxy/dashboard/history.js
+
 export default async function handler(req, res) {
   try {
     const BASE_URL = process.env.BACKEND_URL;
@@ -8,14 +9,20 @@ export default async function handler(req, res) {
     // GET - دریافت تاریخچه
     // -------------------------
     if (req.method === "GET") {
-      const response = await fetch(`${BASE_URL}/dashboard/history`, {
-        method: "GET",
-        headers: {
-          Authorization: authHeader,
-        },
-      });
+      const { page = 1, limit = 12 } = req.query;
+
+      const response = await fetch(
+        `${BASE_URL}/dashboard/history?page=${page}&limit=${limit}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: authHeader,
+          },
+        }
+      );
 
       const data = await response.json();
+
       return res.status(response.status).json(data);
     }
 
@@ -33,16 +40,19 @@ export default async function handler(req, res) {
       });
 
       const data = await response.json();
+
       return res.status(response.status).json(data);
     }
 
-    // -------------------------
-    // Method not allowed
-    // -------------------------
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return res.status(405).json({
+      error: "Method Not Allowed",
+    });
 
   } catch (err) {
     console.error("❌ Error in /api/proxy/dashboard/history:", err);
-    res.status(500).json({ error: "Server error" });
+
+    return res.status(500).json({
+      error: "Server error",
+    });
   }
 }
