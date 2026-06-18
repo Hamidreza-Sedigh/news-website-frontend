@@ -10,7 +10,11 @@ export const useApi = () => {
 
   const request = useCallback(async ({ url, method, body, headers }) => {
     if (!token) {
-      throw new Error("No token available");
+      // throw new Error("No token available");
+      // const error = new Error("Unauthorized");
+      // error.status = 401;
+      // throw error;
+      return;
     }
 
     try {

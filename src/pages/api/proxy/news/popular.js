@@ -1,6 +1,4 @@
 //api/proxy/news/popular:
-import { withAuth } from '../middlewares/withAuth';
-
 
 async function handler(req, res) {
   try {
@@ -10,7 +8,6 @@ async function handler(req, res) {
 
 
     // درخواست به بک‌اند با limit و period
-    //const response = await fetch(`${BACKEND_BASE_URL}/api/news/popular?limit=${limit}&period=${period}`);
     const response = await fetch(`${BASE_URL}/news/popular?limit=${limit}&period=${period}`, {
       headers: {
         Authorization: `Bearer ${process.env.BACKEND_ACCESS_TOKEN}`,
@@ -32,4 +29,4 @@ async function handler(req, res) {
   }
 }
 
-export default withAuth(handler);
+export default handler;

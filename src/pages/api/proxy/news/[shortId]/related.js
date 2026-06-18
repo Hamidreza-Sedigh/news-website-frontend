@@ -1,4 +1,3 @@
-import { withAuth } from '../../middlewares/withAuth';
 
 async function handler(req, res) {
   const { shortId } = req.query;
@@ -21,4 +20,4 @@ async function handler(req, res) {
   }
 }
 
-export default withAuth(handler);
+export default handler;

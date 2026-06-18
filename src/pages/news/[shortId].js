@@ -6,25 +6,43 @@ import NewsContent from '../../components/NewsContent';
 import NewsFooter from '../../components/NewsFooter';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Seo from '@/components/Seo';
+import { useAuth } from "@/context/AuthContext";
 
 export default function NewsDetail({ news, error }) {
+  const { token } = useAuth();
   // 🟢 ثبت بازدید فقط سمت کلاینت
-  useEffect(() => {
-    if (!news?.shortId) return;
-    const token = localStorage.getItem("token");
+useEffect(() => {
+  if (!news?.shortId) return;
 
-    fetch(`/api/proxy/news/view`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ newsId: news.shortId }),
-    })
-    .then((res) => res.json())
-    .then((data) => console.log("✅ View counted:", data))
-    .catch((err) => console.error("❌ View error:", err));
-  }, [news?.shortId]);
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  // فقط اگر لاگین بود هدر Authorization ارسال شود
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const countView = async () => {
+    try {
+      const res = await fetch("/api/proxy/news/view", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          newsId: news.shortId,
+        }),
+      });
+
+      const data = await res.json();
+
+      console.log("✅ View counted:", data);
+    } catch (err) {
+      console.error("❌ View error:", err);
+    }
+  };
+
+  countView();
+}, [news?.shortId, token]);
 
   if (error) {
     return (

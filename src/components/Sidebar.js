@@ -21,20 +21,15 @@ import {
 
 export default function Sidebar() {
   const router = useRouter();
-  const { logout } = useAuth();
+  const { role, logout } = useAuth();
   const [open, setOpen] = useState(false);
-  const [userRole, setUserRole] = useState(null);
 
   const handleLogout = () => {
     logout();
-    router.push("/");
+    // router.push("/");
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setUserRole(localStorage.getItem("userRole"));
-    }
-  }, []);
+
 
   const menuItems = [
     { label: "خانه", path: "/", icon: <Home size={18} /> },
@@ -45,7 +40,7 @@ export default function Sidebar() {
     { label: "تاریخچه خبرهای خوانده شده", path: "/dashboard/history", icon: <BookOpen size={18} /> },
 
     // ⚡ فقط برای ادمین‌ها
-    ...(userRole === "admin"
+    ...(role === "admin"
       ? [
           { label: "مدیریت کاربران", path: "/dashboard/users", icon: <Users size={18} /> },
           { label: "گزارش خرابی‌ها", path: "/dashboard/reports", icon: <FileWarning size={18} /> },

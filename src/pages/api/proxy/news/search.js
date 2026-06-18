@@ -1,5 +1,4 @@
 //api/proxy/news/search
-import { withAuth } from "../middlewares/withAuth";
 
 async function handler(req, res) {
   try {
@@ -34,4 +33,4 @@ async function handler(req, res) {
   }
 }
 
-export default withAuth(handler);
+export default handler;

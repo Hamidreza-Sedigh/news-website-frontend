@@ -2,32 +2,48 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Loader2, Save } from "lucide-react";
 import Sidebar from "../../../components/Sidebar";
+import { useApi } from "@/hooks/useApi";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 export default function EditUserPage() {
   const router = useRouter();
   const { id } = router.query;
+
+  const api = useApi();
+
+  const {
+    loading: authLoading,
+    accessDenied,
+    isAuthenticated,
+  } = useAuthGuard({
+    allowedRoles: ["admin"],
+  });
+
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  // 🟢 توکن را از localStorage بگیر (در پروژه واقعی می‌تونی از context هم استفاده کنی)
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
   // 📦 دریافت اطلاعات کاربر
   useEffect(() => {
-    if (!id) return;
+    if (
+      !id ||
+      authLoading ||
+      accessDenied ||
+      !isAuthenticated
+    ) {
+      return;
+    }
 
-    async function fetchUser() {
+    const fetchUser = async () => {
       try {
-        const res = await fetch(`/api/proxy/dashboard/users/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
+        setLoading(true);
+
+        const data = await api.get(
+          `/api/proxy/dashboard/users/${id}`
+        );
+
         setUser(data);
       } catch (err) {
         console.error("خطا در دریافت اطلاعات کاربر:", err);
@@ -35,30 +51,32 @@ export default function EditUserPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchUser();
-  }, [id]);
+  }, [
+    id,
+    authLoading,
+    accessDenied,
+    isAuthenticated,
+    api,
+  ]);
 
   // 📤 ارسال تغییرات به سرور
-  const handleSave = async (e) => {
+    const handleSave = async (e) => {
     e.preventDefault();
+
     setSaving(true);
     setError("");
 
     try {
-      const res = await fetch(`/api/proxy/dashboard/users/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(user),
-      });
-
-      if (!res.ok) throw new Error("خطا در ذخیره تغییرات");
+      await api.put(
+        `/api/proxy/dashboard/users/${id}`,
+        user
+      );
 
       alert("✅ تغییرات با موفقیت ذخیره شد");
+
       router.push("/dashboard/users");
     } catch (err) {
       console.error(err);
@@ -76,6 +94,25 @@ export default function EditUserPage() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+
+  if (
+    authLoading ||
+    !isAuthenticated
+  ) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="w-6 h-6 animate-spin" />
+      </div>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="flex items-center justify-center h-screen text-red-500">
+        دسترسی مجاز نیست
+      </div>
+    );
+  }
 
   if (loading) {
     return (

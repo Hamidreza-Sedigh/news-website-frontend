@@ -1,6 +1,4 @@
 //api/proxy/news/oneSourceNews
-import { withAuth } from "../middlewares/withAuth";
-
 export default async function handler(req, res) {
   const BASE_URL = process.env.BACKEND_URL;
   const { sourceName, page = 1, pageSize = 10 } = req.query;

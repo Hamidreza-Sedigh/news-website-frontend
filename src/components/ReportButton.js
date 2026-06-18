@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 
+// استفاده از localStorage در این فایل ربطی به Auth ندارد پس می تواند باشد.
+
 export default function ReportButton({ newsId, link }) {
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState('');

@@ -9,8 +9,14 @@ import { useApi } from "@/hooks/useApi";
 import toast from "react-hot-toast";
 
 export default function History() {
-  const { loading: authLoading, accessDenied } = useAuthGuard();
+  const { loading: authLoading, accessDenied, isAuthenticated } = useAuthGuard();
   const api = useApi();
+
+  console.log("Test in history:",{
+    authLoading,
+    accessDenied,
+    isAuthenticated,
+  });
 
   const [loading, setLoading] = useState(true);
   const [readNews, setReadNews] = useState([]);
@@ -20,7 +26,13 @@ export default function History() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (authLoading || accessDenied) return;
+    if (
+      authLoading ||
+      accessDenied ||
+      !isAuthenticated
+    ) {
+      return;
+    }
 
     const fetchHistory = async () => {
       setLoading(true);
@@ -61,7 +73,7 @@ export default function History() {
     };
 
     fetchHistory();
-  }, [authLoading, accessDenied, page, refreshKey]);
+  }, [authLoading, accessDenied, isAuthenticated, page, refreshKey]);
 
   // ✅ حذف آیتم
   const handleRemove = async (newsId) => {
@@ -90,6 +102,9 @@ export default function History() {
     }
   };
 
+  if ( !isAuthenticated ) {
+    return null;
+  }
   if (authLoading || loading) {
     return <p className="p-6">در حال بارگذاری...</p>;
   }

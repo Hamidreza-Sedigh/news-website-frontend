@@ -51,5 +51,6 @@ export const useAuthGuard = ({
     role,
     loading: loading || isLoggingOut,
     accessDenied,
+    isAuthenticated,
   };
 };
